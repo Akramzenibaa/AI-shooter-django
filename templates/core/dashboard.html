@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page page-no-padding-top">
+    <header class="topbar" id="navbar">
+        <div class="topbar-content">
+            <a href="{% url 'core:landing' %}" class="logo">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo">
+                <span>AI Shooter</span>
+            </a>
+
+            <div class="topbar-actions" id="auth-section">
+                {% if not user.is_authenticated %}
+                <div id="google-btn"></div>
+                <div class="flex-gap-small">
+                    <a href="{% url 'account_login' %}" class="btn small secondary">Login</a>
+                    <a href="{% url 'account_signup' %}" class="btn small">Register</a>
+                </div>
+                {% else %}
+                <div class="credits">
+                    <span class="credit-count"><span id="credit-value">{{ user.userprofile.credits|default:0 }}</span>
+                        <span class="desktop-only">Credits</span></span>
+                    <button class="getmore" id="getmore-btn" aria-label="Get More">✨ Get More</button>
+                    <div class="getmore-panel hidden" id="getmore-panel">
+                        <div class="getmore-title">Contact us to get more credits</div>
+                        <div class="getmore-icons">
+                            <a class="icon-link tiktok" href="https://www.tiktok.com/@ai_shooter_bot" target="_blank"
+                                rel="noopener noreferrer">
+                                <img src="https://www.tiktok.com/favicon.ico" alt="TikTok" class="icon-social-size">
+                            </a>
+                            <a class="icon-link whatsapp" href="https://wa.me/+21656358478" target="_blank"
+                                rel="noopener noreferrer">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                                    alt="WhatsApp">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user">
+                    <img src="{{ user.socialaccount_set.all.0.get_avatar_url|default:'https://www.gravatar.com/avatar/' }}"
+                        alt="{{ user.email }}">
+                    <span class="desktop-only">{{ user.first_name|default:user.email }}</span>
+                    <form action="{% url 'account_logout' %}" method="post" class="form-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn small secondary btn-small-padding">Sign
+                            out</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="main-area">
+            <section class="hero">
+                <h1>AI Photo Shooter</h1>
+                <p>Upload an image of your product and get enhanced photos</p>
+                {% if not user.is_authenticated %}
+                <p2 id="login-msg">Make sure you are logged in first</p2>
+                {% endif %}
+            </section>
+
+            <section class="card uploader">
+                <div class="dropzone" id="dropzone" role="button" tabIndex="0">
+                    <div id="dropzone-content">
+                        <div class="cloud"><i data-lucide="upload-cloud"></i></div>
+                        <div class="hint">Click to select an image</div>
+                    </div>
+                    <img id="preview-img" class="dz-preview hidden" src="" alt="Selected image">
+                </div>
+                <input id="image-input" type="file" accept="image/*" class="hidden">
+
+                <div class="count">
+                    <div class="label">Images to generate:</div>
+                    <div class="opts">
+                        {% for n in "1234"|make_list %}
+                        <button class="opt {% if forloop.counter == 4 %}selected{% endif %}"
+                            data-count="{{ forloop.counter }}">{{ forloop.counter }}</button>
+                        {% endfor %}
+                    </div>
+                    <div class="deduct-msg" id="deduct-msg">Cost: 4 credits</div>
+
+                </div>
+
+                <button class="generate-btn" id="generate-btn"
+                    data-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+                    data-login-url="{% url 'account_login' %}?next={{ request.path }}">Generate</button>
+                <div class="error-msg hidden" id="error-msg"></div>
+                <div class="status" id="status-msg"></div>
+            </section>
+
+            <section class="card generating hidden" id="generating-card">
+                <div class="spinner"></div>
+                <div class="gen-title">Your photos are being generated...</div>
+            </section>
+
+            <section class="card results hidden" id="results-card">
+                <div class="results-header">
+                    <h3>Generated Images</h3>
+                </div>
+                <div class="gallery" id="results-gallery"></div>
+            </section>
+        </div>
+
+        <aside class="history-sidebar">
+            <div class="history-header">
+                <div class="history-title">History</div>
+                <div class="history-subtitle">Locally saved</div>
+            </div>
+            <div class="history-grid" id="history-grid">
+                <!-- Server rendered history -->
+                {% for img in history %}
+                <div class="history-item">
+                    <img src="{{ img.image_url }}" alt="History">
+                    <a href="{{ img.image_url }}" download class="dl-icon" title="Download">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path fillRule="evenodd"
+                                d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-2.25a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H4.5a3 3 0 01-3-3v-2.25a.75.75 0 01.75-.75z"
+                                clipRule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="history-empty">No history yet</div>
+                {% endfor %}
+            </div>
+        </aside>
+    </main>
+
+    <div class="modal hidden" id="image-modal">
+        <img id="modal-img" src="" alt="Full view">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+<script src="{% static 'js/dashboard.js' %}?v=1.1"></script>
+{% endblock %}

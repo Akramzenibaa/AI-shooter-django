@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<style>
+    /* Add some specific overrides for icons and interactions */
+    .icon-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background: var(--glass);
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+    <nav class="nav-container" id="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo" width="32" height="32">
+                <span>AI Shooter</span>
+            </div>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:dashboard' %}" class="nav-btn no-decoration">
+                    Launch App
+                </a>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <form action="{% url 'account_logout' %}" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn secondary ml-small">Sign
+                        Out</button>
+                </form>
+                {% else %}
+                <a href="{% url 'account_login' %}" class="nav-btn secondary mx-small no-decoration">Login</a>
+                <a href="{% url 'account_signup' %}" class="nav-btn no-decoration">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-bg-glow"></div>
+            <div class="hero-content stagger-container" id="hero-stagger">
+                <h1 class="hero-title">
+                    Elevate Your Product <br>
+                    <span>Photography with AI</span>
+                </h1>
+                <p class="hero-subtitle delay-1">
+                    Transform ordinary product shots into professional, high-converting images in seconds. No studio
+                    required.
+                </p>
+                <div class="cta-group delay-2">
+                    <a href="{% url 'core:dashboard' %}" class="primary-cta">
+                        Start Generating <i data-lucide="arrow-right"></i>
+                    </a>
+                    <a href="#how-it-works" class="secondary-cta">
+                        How it Works
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="trust-section">
+            <h3 class="trust-title">TRUSTED BY 10,000+ SELLERS ON</h3>
+            <div class="logos-grid">
+                <div class="logo-item">Shopify</div>
+                <div class="logo-item opacity-80">Amazon</div>
+                <div class="logo-item">Etsy</div>
+                <div class="logo-item">WooCommerce</div>
+                <div class="logo-item">Wix</div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section class="showcase-section reveal-up">
+            <div class="showcase-container">
+                <div class="comparison-container" id="comparison-slider">
+                    <img src="{% static 'assets/after.jpg' %}" alt="After" class="comparison-image after"
+                        draggable="false">
+                    <img src="{% static 'assets/before.jpg' %}" alt="Before" class="comparison-image before"
+                        draggable="false" id="before-img">
+
+                    <div class="slider-handle" id="slider-handle">
+                        <div class="slider-line"></div>
+                        <div class="slider-button">
+                            <i data-lucide="move-horizontal" class="slider-icon-dark"></i>
+                        </div>
+                    </div>
+
+                    <div class="labels">
+                        <span class="label before-label" id="before-label">Original</span>
+                        <span class="label after-label" id="after-label">AI Enhanced</span>
+                    </div>
+                </div>
+                <p class="hero-subtitle comparison-desc">
+                    Drag the slider to see the magic
+                </p>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="steps-section">
+            <h2 class="section-title animate-on-scroll">How It Works</h2>
+            <div class="steps-grid stagger-container">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Upload</h3>
+                        <p class="feature-desc">Upload your raw product photo. Our AI accepts all standard formats.</p>
+                    </div>
+                </div>
+                <div class="step-card delay-1">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Process</h3>
+                        <p class="feature-desc">Sit back while our AI works its magic. It only takes a few seconds to
+                            deliver studio quality.</p>
+                    </div>
+                </div>
+                <div class="step-card delay-2">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Sell</h3>
+                        <p class="feature-desc">Download your 4K studio-quality image and boost your conversion rates.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="grid stagger-container">
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="zap"></i></div>
+                    <h3 class="feature-title">Instant Results</h3>
+                    <p class="feature-desc">Get studio-quality photos in seconds, not days. Our AI processes your images
+                        lightning fast.</p>
+                </div>
+                <div class="feature-card delay-1">
+                    <div class="feature-icon"><i data-lucide="camera"></i></div>
+                    <h3 class="feature-title">High Definition</h3>
+                    <p class="feature-desc">Crystal clear 4K resolution output suitable for any e-commerce platform or
+                        print media.</p>
+                </div>
+                <div class="feature-card delay-2">
+                    <div class="feature-icon"><i data-lucide="layers"></i></div>
+                    <h3 class="feature-title">Endless Variations</h3>
+                    <p class="feature-desc">Generate multiple backgrounds and settings from a single product photo
+                        automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="hero-section reveal-up final-cta-section">
+            <div class="final-cta-wrapper">
+                <h2 class="hero-title final-cta-title">Ready to transform your workflow?</h2>
+                <br>
+                <a href="{% url 'core:dashboard' %}" class="primary-cta final-cta-button">
+                    Try AI Shooter Now
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>AI Shooter</h2>
+                <p class="footer-text-muted">Professional product photography for everyone.</p>
+            </div>
+            <!-- Standard Footer Links -->
+            <div class="footer-links">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 AI Shooter. All rights reserved.
+        </div>
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Comparison Slider Logic
+    const slider = document.getElementById('comparison-slider');
+    const beforeImg = document.getElementById('before-img');
+    const handle = document.getElementById('slider-handle');
+    const beforeLabel = document.getElementById('before-label');
+    const afterLabel = document.getElementById('after-label');
+
+    let isResizing = false;
+
+    function setPosition(x) {
+        const rect = slider.getBoundingClientRect();
+        const offsetX = x - rect.left;
+        const position = Math.min(Math.max((offsetX / rect.width) * 100, 0), 100);
+
+        beforeImg.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
+        handle.style.left = `${position}%`;
+
+        beforeLabel.style.opacity = position > 10 ? 1 : 0;
+        afterLabel.style.opacity = position < 90 ? 1 : 0;
+    }
+
+    slider.addEventListener('mousedown', () => isResizing = true);
+    window.addEventListener('mouseup', () => isResizing = false);
+    window.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        setPosition(e.clientX);
+    });
+
+    // Touch support
+    slider.addEventListener('touchstart', () => isResizing = true);
+    window.addEventListener('touchend', () => isResizing = false);
+    window.addEventListener('touchmove', (e) => {
+        if (!isResizing) return;
+        setPosition(e.touches[0].clientX);
+    });
+
+    // Initial position
+    setPosition(slider.getBoundingClientRect().left + slider.getBoundingClientRect().width / 2);
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Once visible, we can stop observing
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Elements to observe
+    const animElements = document.querySelectorAll('.animate-on-scroll, .reveal-up, .stagger-container');
+    animElements.forEach(el => observer.observe(el));
+
+    // Special case for hero stagger which should run immediately
+    setTimeout(() => {
+        document.getElementById('hero-stagger').classList.add('visible');
+    }, 100);
+</script>
+{% endblock %}
