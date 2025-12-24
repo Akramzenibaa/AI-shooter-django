@@ -469,6 +469,27 @@ body {
     border: 1px solid var(--card-border);
 }
 
+.text-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 80px;
+    margin-top: 8px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.text-input:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
 .count .label {
     font-weight: 500;
     color: var(--text-muted);
@@ -480,6 +501,10 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
+}
+
+.count .mode-opts {
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .opt {

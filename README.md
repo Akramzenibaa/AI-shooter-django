@@ -1,16 +1,38 @@
-# React + Vite
+# AI Shooter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI Shooter is a professional AI-powered product photography application. It allows users to turn simple product photos into high-end advertising campaigns using Google Gemini's multimodal capabilities.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Multi-Mode Generation**:
+    -   **✨ Campaign**: Creates conceptual, high-emotion advertising scenes.
+    -   **👤 On Model**: Realistically places products on human models.
+    -   **⬜ Clean BG**: Generates commercial quality, distraction-free product shots.
+-   **Custom Prompting**: Users can provide specific creative direction (e.g., "add neon lights") which the AI integrates into the generation process.
+-   **Credit System**: Built-in user credit management.
+-   **History**: Automatically saves generated images locally.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Backend**: Django 5.x, Python 3.12
+-   **AI**: Google Gemini 2.0 Flash Lite (Analysis) + Gemini 2.5 Flash Image (Generation)
+-   **Frontend**: HTML, CSS (Vanilla), JavaScript
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  Clone the repository.
+2.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  Set up environment variables (see `.env`):
+    -   `GOOGLE_API_KEY`: Your Gemini API key.
+    -   `DJANGO_SECRET_KEY`: Your Django secret.
+4.  Run migrations:
+    ```bash
+    python manage.py migrate
+    ```
+5.  Start the server:
+    ```bash
+    python manage.py runserver 5500
+    ```

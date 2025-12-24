@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewImg = document.getElementById('preview-img');
     const dropzoneContent = document.getElementById('dropzone-content');
     const generateBtn = document.getElementById('generate-btn');
-    const opts = document.querySelectorAll('.opt');
+
     const deductMsg = document.getElementById('deduct-msg');
     const errorMsg = document.getElementById('error-msg');
     const statusMsg = document.getElementById('status-msg');
@@ -25,13 +25,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Option Selection
-    opts.forEach(opt => {
+    // Handle Option Selection (Count)
+    const countOpts = document.querySelectorAll('.count-opt');
+    countOpts.forEach(opt => {
         opt.addEventListener('click', () => {
-            opts.forEach(o => o.classList.remove('selected'));
+            countOpts.forEach(o => o.classList.remove('selected'));
             opt.classList.add('selected');
             imgCount = parseInt(opt.dataset.count);
             deductMsg.textContent = `Cost: ${imgCount} credits`;
+        });
+    });
+
+    // Handle Mode Selection
+    let selectedMode = 'creative';
+    const modeOpts = document.querySelectorAll('.mode-opt');
+    modeOpts.forEach(opt => {
+        opt.addEventListener('click', () => {
+            modeOpts.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            selectedMode = opt.dataset.mode;
         });
     });
 
@@ -92,9 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // resultsCard is no longer hidden here, keeping previous results visible
 
 
+        const userPrompt = document.getElementById('user-prompt').value;
         const formData = new FormData();
         formData.append('image', selectedFile);
         formData.append('count', imgCount);
+        formData.append('mode', selectedMode);
+        formData.append('user_prompt', userPrompt);
 
         try {
             const response = await fetch('/images/generate/', {

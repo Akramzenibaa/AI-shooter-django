@@ -10,13 +10,15 @@ def generate_image(request):
         try:
             image_file = request.FILES.get('image')
             count = int(request.POST.get('count', 4))
+            mode = request.POST.get('mode', 'creative')
+            user_prompt = request.POST.get('user_prompt', '')
             
             user_profile = request.user.userprofile
             if user_profile.credits < count:
                 return JsonResponse({'error': 'Not enough credits'}, status=402)
             
             # Call Gemini service
-            results = generate_campaign_images(image_file, count)
+            results = generate_campaign_images(image_file, count, mode, user_prompt)
             
             if not results:
                 # If service returned empty, check if it's likely a quota issue

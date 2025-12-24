@@ -73,15 +73,29 @@
                 <input id="image-input" type="file" accept="image/*" class="hidden">
 
                 <div class="count">
+                    <div class="label">Generation Mode:</div>
+                    <div class="opts mode-opts">
+                        <button class="opt mode-opt selected" data-mode="creative">✨ Campaign</button>
+                        <button class="opt mode-opt" data-mode="model">👤 On Model</button>
+                        <button class="opt mode-opt" data-mode="background">⬜ Clean BG</button>
+                    </div>
+                </div>
+
+                <div class="count">
+                    <div class="label" for="user-prompt">Additional Instructions (Optional):</div>
+                    <textarea id="user-prompt" class="text-input"
+                        placeholder="e.g. Make it dark & moody, add blue lighting..."></textarea>
+                </div>
+
+                <div class="count">
                     <div class="label">Images to generate:</div>
-                    <div class="opts">
+                    <div class="opts count-opts">
                         {% for n in "1234"|make_list %}
-                        <button class="opt {% if forloop.counter == 4 %}selected{% endif %}"
+                        <button class="opt count-opt {% if forloop.counter == 4 %}selected{% endif %}"
                             data-count="{{ forloop.counter }}">{{ forloop.counter }}</button>
                         {% endfor %}
                     </div>
                     <div class="deduct-msg" id="deduct-msg">Cost: 4 credits</div>
-
                 </div>
 
                 <button class="generate-btn" id="generate-btn"

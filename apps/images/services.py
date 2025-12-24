@@ -8,14 +8,15 @@ from PIL import Image
 from io import BytesIO
 import base64
 from datetime import datetime
-from .prompts import ANALYSIS_PROMPT, PROMPT_GENERATION_PROMPT
+from . import prompts
 
 logger = logging.getLogger(__name__)
 
-def generate_campaign_images(image_input, count=1):
+def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=''):
     """
     Production-grade service using the latest google-genai SDK.
     Optimized for Free Tier with model splitting and throttling.
+    Modes: 'creative', 'model', 'background'
     """
     client = genai.Client(api_key=settings.GOOGLE_API_KEY)
     
@@ -45,9 +46,31 @@ def generate_campaign_images(image_input, count=1):
     try:
         # --- PHASE 1 & 2: CONSOLIDATED ANALYSIS & IDEATION (Gemini 2.0 Flash Lite) ---
         # 2.0-flash-lite: The absolute highest quota model for text/vision.
-        logger.info("Phase 1 & 2: Analyzing & Brainstorming (Gemini 2.0 Flash Lite)...")
+        logger.info(f"Phase 1 & 2: Analyzing & Brainstorming (Gemini 2.0 Flash Lite) [Mode: {mode}]...")
         
-        combined_prompt = f"{ANALYSIS_PROMPT}\n\nTHEN, IMMEDIATELY {PROMPT_GENERATION_PROMPT.format(count=count)}"
+        # Select prompt based on mode
+        if mode == 'model':
+            analysis_text = prompts.ANALYSIS_PROMPT_MODEL
+        elif mode == 'background':
+            analysis_text = prompts.ANALYSIS_PROMPT_BACKGROUND
+        else:
+            analysis_text = prompts.ANALYSIS_PROMPT_CREATIVE
+
+        # Inject user custom instructions if provided
+        custom_instruction = ""
+        if user_prompt and user_prompt.strip():
+            # We add this nicely to the creative brief
+            custom_instruction = f"\n\nADDITIONAL USER REQUIREMENTS:\nThe user has explicitly requested: {user_prompt.strip()}.\nIntegrate this requirement naturally into the visual concepts."
+
+        # We need a stronger connection to ensure it generates the LIST, not just the analysis.
+        combined_prompt = (
+            f"{analysis_text}\n"
+            f"{custom_instruction}\n"
+            f"--------------------------------------------------\n"
+            f"CRITICAL INSTRUCTION: Perform the analysis above silently, "
+            f"and then output ONLY the list of prompts as requested below.\n"
+            f"{prompts.PROMPT_GENERATION_PROMPT.format(count=count)}"
+        )
         
         try:
             consolidated_res = client.models.generate_content(
