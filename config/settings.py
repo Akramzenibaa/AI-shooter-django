@@ -20,7 +20,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,aishooter.lbahi.digital').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# Ensure localhost and default domain are always allowed
+ALLOWED_HOSTS += ['localhost', '127.0.0.1', 'aishooter.lbahi.digital']
+# Remove duplicates and empty strings
+ALLOWED_HOSTS = list(set([host.strip() for host in ALLOWED_HOSTS if host.strip()]))
+
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5500,https://aishooter.lbahi.digital').split(',')
 
 
