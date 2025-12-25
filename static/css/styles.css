@@ -760,9 +760,9 @@ body {
     }
 
     .credits {
-        padding: 4px;
-        background: transparent;
-        border: none;
+        padding: 4px 4px 4px 10px;
+        /* Adjusted padding for better fit */
+        /* background and border will now be inherited from global styles */
     }
 
     .signin {

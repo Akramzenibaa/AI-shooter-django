@@ -16,7 +16,9 @@ ALLOWED_HOSTS=your-domain.com
 CSRF_TRUSTED_ORIGINS=https://your-domain.com
 DATABASE_URL=postgres://ai_user:mypassword@db:5432/ai_shooter
 GOOGLE_API_KEY=your-gemini-key
-SECRET_KEY=generate-a-random-string
+SECRET_KEY=django-insecure-random-string-safe-chars-only
+# IMPORTANT: Avoid using '$' or other special shell characters in SECRET_KEY on Coolify/Docker
+# as they can cause build failures (variable substitution errors).
 
 # Email Configuration (for your personal email + app key)
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
