@@ -4,8 +4,11 @@
 set -e
 
 # Run migrations
+# Run migrations
 echo "Run migrations..."
+python manage.py wait_for_db
 python manage.py migrate
+
 
 # Collect static files
 echo "Collect static files..."
