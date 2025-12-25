@@ -1,0 +1,31 @@
+THE GRAIN-DEAD WAY TO DEPLOY ON COOLIFY
+
+1. PUSH CODE
+   - Push this code to your GitHub repository.
+
+2. COOLIFY DASHBOARD
+   - Click "+ New Resource"
+   - Select "Git Repository" -> Choose this repo.
+   - Build Pack: Select "Docker Compose" (Important!)
+   - You will see it load "web" and "db" services automatically.
+
+3. ENVIRONMENT VARIABLES (Copy Paste these into Coolify "Environment Variables" section)
+
+DEBUG=False
+ALLOWED_HOSTS=your-domain.com
+CSRF_TRUSTED_ORIGINS=https://your-domain.com
+DATABASE_URL=postgres://ai_user:mypassword@db:5432/ai_shooter
+GOOGLE_API_KEY=your-gemini-key
+SECRET_KEY=generate-a-random-string
+
+# Email Configuration (for your personal email + app key)
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=lbahidigital@gmail.com
+EMAIL_HOST_PASSWORD=drnb jeid kfej qixj
+DEFAULT_FROM_EMAIL="AI Shooter <lbahidigital@gmail.com>"
+
+4. CLICK DEPLOY
+   - That's it. Coolify will build the Docker image, start Postgres, migrate the DB, and launch the site.

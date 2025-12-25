@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}About - AI Shooter{% endblock %}
+
+{% block content %}
+<div class="page-no-padding-top" style="padding-top: 100px; padding-bottom: 60px;">
+    <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        <h1
+            style="font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            About AI Shooter</h1>
+
+        <div class="card"
+            style="padding: 40px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px;">
+            <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.5rem;">
+                AI Shooter is redefining how e-commerce sellers create product imagery. We believe that professional
+                photography shouldn't require thousands of dollars in equipment or studio rentals.
+            </p>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.5rem;">
+                Our mission is to democratize high-end advertising photography using state-of-the-art Generative AI.
+                Whether you are a solo Etsy seller or a scaling Shopify brand, our tools give you the visual edge you
+                need to compete with major retailers.
+            </p>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--card-border);">
+                <h3 style="color: var(--text-main); margin-bottom: 1rem;">Why Choose Us?</h3>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="margin-bottom: 0.5rem; display: flex; gap: 10px; align-items: center;">
+                        <i data-lucide="check" style="color: var(--primary);"></i> <span>Instant studio quality
+                            results</span>
+                    </li>
+                    <li style="margin-bottom: 0.5rem; display: flex; gap: 10px; align-items: center;">
+                        <i data-lucide="check" style="color: var(--primary);"></i> <span>Cost-effective compared to
+                            traditional shoots</span>
+                    </li>
+                    <li style="margin-bottom: 0.5rem; display: flex; gap: 10px; align-items: center;">
+                        <i data-lucide="check" style="color: var(--primary);"></i> <span>Creative freedom with unlimited
+                            variations</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    lucide.createIcons();
+</script>
+{% endblock %}

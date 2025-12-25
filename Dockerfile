@@ -24,8 +24,9 @@ COPY . /app/
 # Create media and static directories
 RUN mkdir -p /app/static /app/media
 
-# Collect static files
-# RUN python manage.py collectstatic --noinput
+# Collect static files (Coolify needs this to run during build/start)
+# We use a small script to run migrations and start server
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Start the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["/entrypoint.sh"]

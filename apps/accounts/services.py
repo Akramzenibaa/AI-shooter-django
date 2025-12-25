@@ -18,7 +18,7 @@ class EmailService:
         }
         
         data = {
-            "from": "AI Shooter <onboarding@resend.dev>",
+            "from": settings.DEFAULT_FROM_EMAIL,
             "to": [to_email],
             "subject": "Welcome to AI Shooter!",
             "html": f"<strong>Hello {user_name}!</strong><p>Thanks for joining AI Shooter. You have 10 free credits to start shooting!</p>",

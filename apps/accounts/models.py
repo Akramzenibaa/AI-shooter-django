@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    credits = models.IntegerField(default=10) # Default free trial
+    credits = models.IntegerField(default=3) # Default free trial
     
     def __str__(self):
         return self.user.email

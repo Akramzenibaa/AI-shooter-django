@@ -44,9 +44,9 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     os.makedirs(output_dir, exist_ok=True)
 
     try:
-        # --- PHASE 1 & 2: CONSOLIDATED ANALYSIS & IDEATION (Gemini 2.0 Flash Lite) ---
-        # 2.0-flash-lite: The absolute highest quota model for text/vision.
-        logger.info(f"Phase 1 & 2: Analyzing & Brainstorming (Gemini 2.0 Flash Lite) [Mode: {mode}]...")
+        # --- PHASE 1 & 2: CONSOLIDATED ANALYSIS & IDEATION (Gemini 3 Pro) ---
+        # 3.0-pro-preview: The absolute highest IQ model for text/vision.
+        logger.info(f"Phase 1 & 2: Analyzing & Brainstorming (Gemini 3 Pro) [Mode: {mode}]...")
         
         # Select prompt based on mode
         if mode == 'model':
@@ -74,7 +74,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
         
         try:
             consolidated_res = client.models.generate_content(
-                model='gemini-2.0-flash-lite',
+                model='gemini-3-pro-preview',
                 contents=[combined_prompt, types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')]
             )
             response_text = consolidated_res.text
@@ -112,11 +112,11 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
 
         time.sleep(1) # Minimal pause for testing
 
-        # --- PHASE 3: EXECUTION (Gemini 2.5 Flash Image) ---
-        # Native Image Generation: This model (Nano Banana) draws natively.
+        # --- PHASE 3: EXECUTION (Nano Banana Pro / Gemini 3 Pro Image) ---
+        # Native Image Generation: This model (Nano Banana Pro) draws natively at 4K.
         results = []
         for i, p_text in enumerate(generated_prompts):
-            logger.info(f"Phase 3: Image {i+1}/{len(generated_prompts)} (Gemini 2.5 Flash Image)...")
+            logger.info(f"Phase 3: Image {i+1}/{len(generated_prompts)} (Gemini 3 Pro Image)...")
             
             if i > 0: time.sleep(2) # Faster for Flash
 
@@ -126,7 +126,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             try:
                 # Use generate_content for Native Image Models with original image context
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash-image',
+                    model='gemini-3-pro-image-preview',
                     contents=[
                         p_text, 
                         types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
@@ -154,7 +154,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         'prompt': p_text,
                         'url': f"{settings.MEDIA_URL}generated_campaigns/{filename}"
                     })
-                    logger.info(f"Success! Image {i+1} saved using Gemini 2.5 Flash Image.")
+                    logger.info(f"Success! Image {i+1} saved using Gemini 3 Pro Image.")
                 else:
                     logger.warning(f"No native image found in response for prompt {i+1}")
             
