@@ -49,7 +49,8 @@ body {
 /* Topbar / Navbar Global */
 .nav-container,
 .topbar {
-    position: fixed;
+    position: sticky;
+    /* Switched from fixed to sticky */
     top: 0;
     left: 0;
     right: 0;
@@ -283,8 +284,8 @@ body {
 .content {
     width: 100%;
     margin: 0;
-    padding: 140px 40px 40px;
-    /* 140px top padding for fixed navbar */
+    padding: 40px;
+    /* Removed 140px top padding as sticky takes space */
     display: flex;
     gap: 40px;
     align-items: flex-start;
@@ -698,7 +699,8 @@ body {
 @media (max-width: 1024px) {
     .content {
         flex-direction: column;
-        padding: 0 20px;
+        padding: 20px;
+        /* Removed manual top padding offset */
         gap: 32px;
     }
 
@@ -714,8 +716,11 @@ body {
 }
 
 @media (max-width: 640px) {
-    .topbar {
-        padding: 12px 16px;
+
+    .topbar,
+    .nav-container {
+        padding: 8px 12px;
+        /* Even tighter padding on very small screens */
     }
 
     .title span {

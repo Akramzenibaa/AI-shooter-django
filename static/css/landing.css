@@ -42,7 +42,8 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 6rem 2rem 3rem; /* Reduced from 8rem 2rem 4rem */
+  padding: 2rem 2rem 3rem;
+  /* Further reduced because sticky navbar takes space */
   position: relative;
 }
 
@@ -151,7 +152,8 @@
 
 /* Features Grid */
 .features-section {
-  padding: 3rem 2rem; /* Reduced from 4rem 2rem */
+  padding: 3rem 2rem;
+  /* Reduced from 4rem 2rem */
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
@@ -204,7 +206,8 @@
 
 /* Showcase Section */
 .showcase-section {
-  padding: 3rem 0; /* Reduced from 6rem 0 */
+  padding: 3rem 0;
+  /* Reduced from 6rem 0 */
   background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.05), transparent);
   text-align: center;
 }
@@ -395,7 +398,8 @@
 
 /* How It Works */
 .steps-section {
-  padding: 5rem 2rem; /* Reduced from 10rem 2rem */
+  padding: 5rem 2rem;
+  /* Reduced from 10rem 2rem */
   position: relative;
   background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.05), transparent 70%);
 }
@@ -404,7 +408,8 @@
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 800;
   text-align: center;
-  margin-bottom: 3rem; /* Reduced from 5rem */
+  margin-bottom: 3rem;
+  /* Reduced from 5rem */
   background: linear-gradient(to right, #fff, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
@@ -494,7 +499,8 @@
 /* Footer */
 .landing-footer {
   background: #050508;
-  padding: 4rem 2rem 2rem; /* Reduced from 6rem 2rem 2rem */
+  padding: 4rem 2rem 2rem;
+  /* Reduced from 6rem 2rem 2rem */
   border-top: 1px solid var(--glass-border);
 }
 
