@@ -77,6 +77,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
+    /* Prevent stacking */
 }
 
 .logo {
@@ -765,6 +767,35 @@ body {
     .getmore {
         padding: 6px 10px;
         font-size: 0.8rem;
+    }
+
+    /* Prevent navbar stacking */
+    .nav-content,
+    .topbar-content {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.5rem;
+    }
+
+    .nav-links,
+    .topbar-actions {
+        gap: 0.4rem;
+    }
+
+    .nav-btn,
+    .btn.small {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .logo img {
+        width: 24px;
+        height: 24px;
     }
 
     /* Make download icons visible on mobile without hover */
