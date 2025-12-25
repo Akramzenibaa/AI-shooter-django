@@ -798,9 +798,15 @@ body {
         font-size: 1.1rem;
     }
 
+    .logo span {
+        display: none;
+        /* Hide logo name on mobile */
+    }
+
     .logo img {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        /* Slightly larger icon since text is gone */
+        height: 28px;
     }
 
     /* Make download icons visible on mobile without hover */
