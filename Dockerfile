@@ -27,6 +27,6 @@ RUN mkdir -p /app/static /app/media
 # Collect static files (Coolify needs this to run during build/start)
 # We use a small script to run migrations and start server
 COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//g' /entrypoint.sh && chmod +x /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
