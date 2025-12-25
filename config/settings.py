@@ -26,7 +26,9 @@ ALLOWED_HOSTS += ['localhost', '127.0.0.1', 'aishooter.lbahi.digital']
 # Remove duplicates and empty strings
 ALLOWED_HOSTS = list(set([host.strip() for host in ALLOWED_HOSTS if host.strip()]))
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5500,https://aishooter.lbahi.digital').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+CSRF_TRUSTED_ORIGINS += ['http://localhost:5500', 'https://aishooter.lbahi.digital']
+CSRF_TRUSTED_ORIGINS = list(set([origin.strip() for origin in CSRF_TRUSTED_ORIGINS if origin.strip()]))
 
 
 # Application definition
