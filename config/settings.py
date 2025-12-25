@@ -202,6 +202,14 @@ SOCIALACCOUNT_ADAPTER = 'apps.accounts.adapter.CustomSocialAccountAdapter'
 # Google AI Studio
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
 
+# Security Settings for Reverse Proxy (Coolify/Traefik)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+# ACCOUNTS - Force HTTPS
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
