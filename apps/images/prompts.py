@@ -9,7 +9,7 @@ MODE_RULES_CREATIVE = """- Focus: Product MUST be the hero.
 - Lighting: Professional, appropriate to mood.
 - Camera: Sony A7R V, 85mm f/1.4.
 - Scene: Design a visual world that makes the product irresistible.
-- PRODUCT INTEGRITY: Do not alter the product's shape, labels, or texture. It is the unchangeable anchor of the scene.
+- PRODUCT INTEGRITY: Do not alter the product's shape, colors, labels, or texture. It is the unchangeable anchor of the scene.
 """
 
 # Rules for 'model' mode
@@ -17,7 +17,7 @@ MODE_RULES_MODEL = """- Focus: The product is the TOP PRIORITY. It must be fully
 - Setting: A real-world lifestyle context that fits the demographic.
 - Integration: Visualize the product being worn or held naturally by a diverse model.
 - Scale: Preserve exact product size relative to the model.
-- PRODUCT INTEGRITY: Every detail on the product (labels, logos, materials) must remain exactly as seen in the reference image.
+- PRODUCT INTEGRITY: Every detail on the product (labels, logos, materials, colors) must remain exactly as seen in the reference image.
 """
 
 # Rules for 'background' mode
