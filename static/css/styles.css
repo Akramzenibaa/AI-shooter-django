@@ -747,12 +747,16 @@ body {
     }
 
     /* Mobile Friendly Topbar Controls */
-    .desktop-only {
-        display: none;
+    .credit-count span.desktop-only {
+        display: inline !important;
+        /* Force "Credits" to show on mobile */
+        margin-left: 4px;
     }
 
     .credit-count {
         font-size: 0.9rem;
+        display: flex;
+        align-items: center;
     }
 
     .user span {
@@ -821,6 +825,29 @@ body {
         opacity: 1;
         transform: translateY(0);
         background: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Equal size buttons for mobile */
+    .count .opts {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    .count .mode-opts {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .opt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        min-height: 80px;
+        font-size: 0.85rem;
+        padding: 8px 4px;
     }
 }
 
