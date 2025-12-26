@@ -860,9 +860,17 @@ body {
         justify-content: center;
         text-align: center;
         width: 100%;
-        min-height: 80px;
-        font-size: 0.85rem;
+        min-height: 70px;
+        /* Reduced from 80px */
+        font-size: 0.8rem;
         padding: 8px 4px;
+    }
+
+    .count-opt {
+        min-height: 50px !important;
+        /* Much smaller for just numbers */
+        font-size: 1rem !important;
+        /* Make the number itself clear but the button smaller */
     }
 }
 
