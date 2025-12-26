@@ -144,9 +144,10 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                             break
                 
                 if final_img_bytes:
-                    filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.jpg"
+                    filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
                     filepath = os.path.join(output_dir, filename)
                     
+                    # Gemini returns PNG by default for high quality, but let's ensure bytes are saved correctly
                     with open(filepath, 'wb') as f:
                         f.write(final_img_bytes)
                     
@@ -155,7 +156,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         'prompt': p_text,
                         'url': f"{settings.MEDIA_URL}generated_campaigns/{filename}"
                     })
-                    logger.info(f"Success! Final Image {i+1} saved.")
+                    logger.info(f"Success! Final Image {i+1} saved as PNG.")
                 else:
                     logger.warning(f"No image data in final response for prompt {i+1}")
             

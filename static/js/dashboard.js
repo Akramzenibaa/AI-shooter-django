@@ -182,10 +182,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('image-modal');
     const modalImg = document.getElementById('modal-img');
 
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', async (e) => {
+        // Modal Zoom
         if (e.target.tagName === 'IMG' && (e.target.closest('.gallery') || e.target.closest('.history-grid'))) {
             modalImg.src = e.target.src;
             modal.style.display = 'flex';
+            return;
+        }
+
+        // Animated Download
+        const dlBtn = e.target.closest('.dl-icon');
+        if (dlBtn) {
+            e.preventDefault();
+            const imageUrl = dlBtn.href;
+            const filename = imageUrl.split('/').pop();
+
+            // Start Loading
+            dlBtn.classList.add('loading-active');
+
+            try {
+                const response = await fetch(imageUrl);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+
+                // Create virtual link for download
+                const tempLink = document.createElement('a');
+                tempLink.href = blobUrl;
+                tempLink.download = filename;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+
+                // Cleanup
+                window.URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+                console.error("Download failed:", err);
+                // Fallback to direct link if fetch fails
+                window.location.href = imageUrl;
+            } finally {
+                // Stop Loading (slight delay for visual smoothness)
+                setTimeout(() => {
+                    dlBtn.classList.remove('loading-active');
+                }, 600);
+            }
         }
     });
 

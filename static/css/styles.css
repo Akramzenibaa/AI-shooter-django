@@ -603,6 +603,26 @@ body {
     }
 }
 
+.dl-icon.loading-active {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: none;
+}
+
+.dl-icon.loading-active svg {
+    display: none;
+}
+
+.dl-icon.loading-active::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
 .gen-title {
     font-weight: 600;
     font-size: 1.1rem;
