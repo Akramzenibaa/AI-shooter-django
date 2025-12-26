@@ -532,6 +532,11 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.opt:focus {
+    outline: none;
+    /* Remove sticky focus ring */
+}
+
 .opt.selected {
     background: var(--primary);
     border-color: var(--primary);
@@ -809,9 +814,9 @@ body {
         font-size: 1.1rem;
     }
 
-    .logo span {
+    .logo-auth span {
         display: none;
-        /* Hide logo name on mobile */
+        /* Hide logo name ONLY on dashboard when logged in */
     }
 
     .logo img {

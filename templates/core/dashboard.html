@@ -5,7 +5,7 @@
 <div class="page page-no-padding-top">
     <header class="topbar" id="navbar">
         <div class="topbar-content">
-            <a href="{% url 'core:landing' %}" class="logo">
+            <a href="{% url 'core:landing' %}" class="logo {% if user.is_authenticated %}logo-auth{% endif %}">
                 <img src="{% static 'assets/logo.png' %}" alt="Logo">
                 <span>AI Shooter</span>
             </a>
