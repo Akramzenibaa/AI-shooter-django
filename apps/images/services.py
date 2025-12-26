@@ -44,122 +44,112 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     os.makedirs(output_dir, exist_ok=True)
 
     try:
-        # --- PHASE 1 & 2: CONSOLIDATED ANALYSIS & IDEATION (Gemini 3 Pro) ---
-        # 3.0-pro-preview: The absolute highest IQ model for text/vision.
-        logger.info(f"Phase 1 & 2: Analyzing & Brainstorming (Gemini 3 Pro) [Mode: {mode}]...")
+        # --- PHASE 1: GENERATE REFERENCE MODEL IMAGE (Creative Director) ---
+        logger.info("Phase 1: Generating Reference Model Image (Gemini 2.0 Flash)...")
         
-        # Select prompt based on mode
-        if mode == 'model':
-            analysis_text = prompts.ANALYSIS_PROMPT_MODEL
-        elif mode == 'background':
-            analysis_text = prompts.ANALYSIS_PROMPT_BACKGROUND
-        else:
-            analysis_text = prompts.ANALYSIS_PROMPT_CREATIVE
-
-        # Inject user custom instructions if provided
-        custom_instruction = ""
-        if user_prompt and user_prompt.strip():
-            # We add this nicely to the creative brief
-            custom_instruction = f"\n\nADDITIONAL USER REQUIREMENTS:\nThe user has explicitly requested: {user_prompt.strip()}.\nIntegrate this requirement naturally into the visual concepts."
-
-        # We need a stronger connection to ensure it generates the LIST, not just the analysis.
-        combined_prompt = (
-            f"{analysis_text}\n"
-            f"{custom_instruction}\n"
-            f"--------------------------------------------------\n"
-            f"CRITICAL INSTRUCTION: Perform the analysis above silently, "
-            f"and then output ONLY the list of prompts as requested below.\n"
-            f"{prompts.PROMPT_GENERATION_PROMPT.format(count=count)}"
+        director_res = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=[
+                prompts.BETA_V2_DIRECTOR_PROMPT,
+                types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
+            ]
         )
         
-        try:
-            consolidated_res = client.models.generate_content(
-                model='gemini-3-pro-preview',
-                contents=[combined_prompt, types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')]
-            )
-            response_text = consolidated_res.text
-        except Exception as api_err:
-            # If the newest lite model fails, we try the "Old Reliable" 1.5 equivalent
-            if "429" in str(api_err):
-                logger.warning("2.0-Lite Busy. Falling back to Gemini-Flash-Latest...")
-                consolidated_res = client.models.generate_content(
-                    model='gemini-flash-latest',
-                    contents=[combined_prompt, types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')]
-                )
-                response_text = consolidated_res.text
-            else:
-                raise api_err
+        model_img_bytes = None
+        if director_res.candidates and director_res.candidates[0].content.parts:
+            for part in director_res.candidates[0].content.parts:
+                if hasattr(part, 'inline_data') and part.inline_data:
+                    model_img_bytes = part.inline_data.data
+                    break
         
-        if not response_text:
-            logger.warning(f"AI Brain returned no text. Candidates: {consolidated_res.candidates}")
-            response_text = ""
+        if not model_img_bytes:
+            logger.error("Failed to generate Phase 1 Model Image. Falling back...")
+            # Fallback: Just use the original image if model generation failed
+            model_img_bytes = img_bytes
+
+        # --- PHASE 2: GENERATE PROMPT LIST (Prompt Engineer) ---
+        logger.info(f"Phase 2: Engineering {count} Prompts (Gemini 2.0 Flash)...")
         
-        # Parse prompts from the consolidated response
+        engineer_prompt = prompts.BETA_V2_ENGINEER_PROMPT.format(count=count)
+        
+        prompt_res = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=[
+                engineer_prompt,
+                types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),   # [Image 1: Product]
+                types.Part.from_bytes(data=model_img_bytes, mime_type='image/jpeg') # [Image 2: Context/Vibe]
+            ]
+        )
+        
+        response_text = prompt_res.text or ""
         generated_prompts = []
         for line in response_text.split('\n'):
-            if line.strip() and (line[0].isdigit() and '. ' in line[:4]):
+            line = line.strip()
+            if line and (line[0].isdigit() and ('. ' in line[:4] or ') ' in line[:4])):
                 if ':' in line:
                     generated_prompts.append(line.split(':', 1)[1].strip())
                 else:
-                    generated_prompts.append(line.split('.', 1)[1].strip())
+                    # Capture everything after the first dot/parenthesis
+                    import re
+                    match = re.search(r'^\d+[\.\)]\s*(.*)', line)
+                    if match:
+                        generated_prompts.append(match.group(1).strip())
         
         # Fallback if parsing fails
         if not generated_prompts:
-             generated_prompts = [line.strip() for line in response_text.split('\n') if len(line.strip()) > 30][:count]
+            generated_prompts = [line.strip() for line in response_text.split('\n') if len(line.strip()) > 30][:count]
 
         generated_prompts = generated_prompts[:count]
-        logger.info(f"Ideation complete. Found {len(generated_prompts)} concepts.")
+        logger.info(f"Phase 2 complete. Generated {len(generated_prompts)} prompts.")
 
-        time.sleep(1) # Minimal pause for testing
-
-        # --- PHASE 3: EXECUTION (Nano Banana Pro / Gemini 3 Pro Image) ---
-        # Native Image Generation: This model (Nano Banana Pro) draws natively at 4K.
+        # --- PHASE 3: EXECUTE FINAL IMAGES (Artist) ---
         results = []
         for i, p_text in enumerate(generated_prompts):
-            logger.info(f"Phase 3: Image {i+1}/{len(generated_prompts)} (Gemini 3 Pro Image)...")
+            logger.info(f"Phase 3: Generating Final Image {i+1}/{len(generated_prompts)}...")
             
-            if i > 0: time.sleep(2) # Faster for Flash
+            if i > 0: time.sleep(2) # Modest throttle for rate limits
 
-            # Imagen models prefer a direct, descriptive prompt
-            execution_req = f"{p_text}. Professional high-quality advertising photography, 8k resolution, cinematic lighting."
+            # Instruction similar to n8n: "Generate a photo-realistic image using the provided model image and the provided product..."
+            artist_instruction = (
+                "Generate a photo-realistic image using the provided model image and the provided product. "
+                f"Follow these details: {p_text}"
+            )
             
             try:
-                # Use generate_content for Native Image Models with original image context
-                response = client.models.generate_content(
-                    model='gemini-3-pro-image-preview',
+                final_res = client.models.generate_content(
+                    model='gemini-2.0-flash',
                     contents=[
-                        p_text, 
-                        types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
+                        artist_instruction,
+                        types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),       # Input Image 1
+                        types.Part.from_bytes(data=model_img_bytes, mime_type='image/jpeg') # Input Image 2 (Context)
                     ]
                 )
-
                 
-                # Extract image bytes from the first candidate/part
-                img_data = None
-                if response.candidates and response.candidates[0].content.parts:
-                    for part in response.candidates[0].content.parts:
+                final_img_bytes = None
+                if final_res.candidates and final_res.candidates[0].content.parts:
+                    for part in final_res.candidates[0].content.parts:
                         if hasattr(part, 'inline_data') and part.inline_data:
-                            img_data = part.inline_data.data
+                            final_img_bytes = part.inline_data.data
                             break
                 
-                if img_data:
-                    filename = f"gen_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.jpg"
+                if final_img_bytes:
+                    filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.jpg"
                     filepath = os.path.join(output_dir, filename)
                     
                     with open(filepath, 'wb') as f:
-                        f.write(img_data)
+                        f.write(final_img_bytes)
                     
                     results.append({
                         'path': filepath,
                         'prompt': p_text,
                         'url': f"{settings.MEDIA_URL}generated_campaigns/{filename}"
                     })
-                    logger.info(f"Success! Image {i+1} saved using Gemini 3 Pro Image.")
+                    logger.info(f"Success! Final Image {i+1} saved.")
                 else:
-                    logger.warning(f"No native image found in response for prompt {i+1}")
+                    logger.warning(f"No image data in final response for prompt {i+1}")
             
             except Exception as e_inner:
-                logger.error(f"Error in Phase 3.{i+1} (Flash Image): {e_inner}")
+                logger.error(f"Error in Phase 3.{i+1}: {e_inner}")
                 if "429" in str(e_inner): break 
 
         return results
