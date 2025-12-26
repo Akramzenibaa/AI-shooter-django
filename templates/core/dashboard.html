@@ -14,8 +14,8 @@
                 {% if not user.is_authenticated %}
                 <div id="google-btn"></div>
                 <div class="flex-gap-small">
-                    <a href="{% url 'account_login' %}" class="btn small secondary">Login</a>
-                    <a href="{% url 'account_signup' %}" class="btn small">Register</a>
+                    <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn small secondary">Login</a>
+                    <a href="{% url 'account_signup' %}?next={{ request.path }}" class="btn small">Register</a>
                 </div>
                 {% else %}
                 <div class="credits">
@@ -43,6 +43,7 @@
                     <span class="desktop-only">{{ user.first_name|default:user.email }}</span>
                     <form action="{% url 'account_logout' %}" method="post" class="form-inline">
                         {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
                         <button type="submit" class="btn small secondary btn-small-padding">Sign
                             out</button>
                     </form>

@@ -34,12 +34,14 @@
                 {% if user.is_authenticated %}
                 <form action="{% url 'account_logout' %}" method="post" class="form-inline">
                     {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
                     <button type="submit" class="nav-btn secondary ml-small">Sign
                         Out</button>
                 </form>
                 {% else %}
-                <a href="{% url 'account_login' %}" class="nav-btn secondary mx-small no-decoration">Login</a>
-                <a href="{% url 'account_signup' %}" class="nav-btn no-decoration">Register</a>
+                <a href="{% url 'account_login' %}?next={{ request.path }}"
+                    class="nav-btn secondary mx-small no-decoration">Login</a>
+                <a href="{% url 'account_signup' %}?next={{ request.path }}" class="nav-btn no-decoration">Register</a>
                 {% endif %}
             </div>
         </div>
