@@ -45,10 +45,10 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
 
     try:
         # --- PHASE 1: GENERATE REFERENCE MODEL IMAGE (Creative Director) ---
-        logger.info("Phase 1: Generating Reference Model Image (Gemini 2.0 Flash)...")
+        logger.info("Phase 1: Generating Reference Model Image (Gemini 3 Pro Preview)...")
         
         director_res = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-3-pro-preview',
             contents=[
                 prompts.BETA_V2_DIRECTOR_PROMPT,
                 types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
@@ -68,12 +68,12 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             model_img_bytes = img_bytes
 
         # --- PHASE 2: GENERATE PROMPT LIST (Prompt Engineer) ---
-        logger.info(f"Phase 2: Engineering {count} Prompts (Gemini 2.0 Flash)...")
+        logger.info(f"Phase 2: Engineering {count} Prompts (Gemini 3 Pro Preview)...")
         
         engineer_prompt = prompts.BETA_V2_ENGINEER_PROMPT.format(count=count)
         
         prompt_res = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-3-pro-preview',
             contents=[
                 engineer_prompt,
                 types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),   # [Image 1: Product]
@@ -105,9 +105,9 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
         # --- PHASE 3: EXECUTE FINAL IMAGES (Artist) ---
         results = []
         for i, p_text in enumerate(generated_prompts):
-            logger.info(f"Phase 3: Generating Final Image {i+1}/{len(generated_prompts)}...")
+            logger.info(f"Phase 3: Generating Final Image {i+1}/{len(generated_prompts)} (Gemini 3 Pro Preview)...")
             
-            if i > 0: time.sleep(2) # Modest throttle for rate limits
+            if i > 0: time.sleep(3) # Slightly longer delay for heavy Pro models
 
             # Instruction similar to n8n: "Generate a photo-realistic image using the provided model image and the provided product..."
             artist_instruction = (
@@ -117,7 +117,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             
             try:
                 final_res = client.models.generate_content(
-                    model='gemini-2.0-flash',
+                    model='gemini-3-pro-preview',
                     contents=[
                         artist_instruction,
                         types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),       # Input Image 1
