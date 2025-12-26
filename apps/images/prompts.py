@@ -8,19 +8,25 @@
 MODE_RULES_CREATIVE = """- Focus: Product MUST be the hero.
 - Lighting: Professional, appropriate to mood.
 - Camera: Sony A7R V, 85mm f/1.4.
-- Scene: Design a visual world that makes the product irresistible."""
+- Scene: Design a visual world that makes the product irresistible.
+- PRODUCT INTEGRITY: Do not alter the product's shape, labels, or texture. It is the unchangeable anchor of the scene.
+"""
 
 # Rules for 'model' mode
 MODE_RULES_MODEL = """- Focus: The product is the TOP PRIORITY. It must be fully visible and uncropped.
 - Setting: A real-world lifestyle context that fits the demographic.
 - Integration: Visualize the product being worn or held naturally by a diverse model.
-- Scale: Preserve exact product size relative to the model."""
+- Scale: Preserve exact product size relative to the model.
+- PRODUCT INTEGRITY: Every detail on the product (labels, logos, materials) must remain exactly as seen in the reference image.
+"""
 
 # Rules for 'background' mode
 MODE_RULES_BACKGROUND = """- Background: Pure white, soft grey, or a subtle monochrome gradient.
 - Surface: Clean reflective surface or matte pedestal.
 - Focus: Sharp clarity, centered, heroic product shot.
-- Minimalist: No clutter, high commercial appeal."""
+- Minimalist: No clutter, high commercial appeal.
+- PRODUCT INTEGRITY: Ensure the product looks exactly like the original, with no distortions or AI hallucinations.
+"""
 
 # ==========================================
 # 3. BETA V2 PROMPTS (Gemini 3 Pro 3-Phase Engine)
@@ -64,6 +70,7 @@ Output Rules:
 - No text, watermarks, or logos.
 - No brand names or captions.
 - PRESERVE EXACT PRODUCT DIMENSIONS AND FORM.
+- CRITICAL: The product in the final image must be a 1:1 perfect visual match of the input product. Do not "improve" or redesign its features.
 - Only one final photo that could appear in a real advertising campaign."""
 
 # ---------------------------------------------------------

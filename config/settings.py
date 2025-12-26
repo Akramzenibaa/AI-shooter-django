@@ -210,6 +210,13 @@ USE_X_FORWARDED_PORT = True
 # ACCOUNTS - Force HTTPS
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
+# Cloudinary Settings
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

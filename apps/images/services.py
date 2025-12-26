@@ -10,6 +10,17 @@ import base64
 from datetime import datetime
 from . import prompts
 
+import cloudinary
+import cloudinary.uploader
+
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=settings.CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True
+)
+
 logger = logging.getLogger(__name__)
 
 def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=''):
@@ -145,18 +156,35 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                 
                 if final_img_bytes:
                     filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
-                    filepath = os.path.join(output_dir, filename)
                     
-                    # Gemini returns PNG by default for high quality, but let's ensure bytes are saved correctly
+                    # 1. Upload to Cloudinary (Primary)
+                    cloudinary_url = None
+                    try:
+                        upload_res = cloudinary.uploader.upload(
+                            final_img_bytes,
+                            folder="generated_campaigns",
+                            public_id=filename.replace('.png', ''),
+                            format="png"
+                        )
+                        cloudinary_url = upload_res.get('secure_url')
+                        logger.info(f"Success! Final Image {i+1} uploaded to Cloudinary.")
+                    except Exception as e:
+                        logger.error(f"Cloudinary upload failed: {str(e)}")
+
+                    # 2. Local Backup Save
+                    filepath = os.path.join(output_dir, filename)
                     with open(filepath, 'wb') as f:
                         f.write(final_img_bytes)
+                    
+                    # URL logic: Use Cloudinary if available, otherwise fallback to local
+                    final_url = cloudinary_url if cloudinary_url else f"{settings.MEDIA_URL}generated_campaigns/{filename}"
                     
                     results.append({
                         'path': filepath,
                         'prompt': p_text,
-                        'url': f"{settings.MEDIA_URL}generated_campaigns/{filename}"
+                        'url': final_url
                     })
-                    logger.info(f"Success! Final Image {i+1} saved as PNG.")
+                    logger.info(f"Final Image {i+1} ready at: {final_url}")
                 else:
                     logger.warning(f"No image data in final response for prompt {i+1}")
             
