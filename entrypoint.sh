@@ -8,6 +8,7 @@ set -e
 echo "Run migrations..."
 python manage.py wait_for_db
 python manage.py migrate
+python manage.py createsuperuser --noinput || true # Create admin if env vars are provided
 
 
 # Collect static files
