@@ -793,6 +793,13 @@ body {
         font-size: 0.8rem;
     }
 
+    .getmore-panel {
+        right: -80px;
+        /* Shift right to prevent left-side cutoff on mobile */
+        width: 260px;
+        padding: 16px;
+    }
+
     /* Prevent navbar stacking */
     .nav-content,
     .topbar-content {
