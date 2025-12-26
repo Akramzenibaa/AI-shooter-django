@@ -45,12 +45,17 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
 
     try:
         # --- PHASE 1: GENERATE REFERENCE MODEL IMAGE (Creative Director) ---
-        logger.info("Phase 1: Generating Reference Model Image (Gemini 3 Pro Preview)...")
+        logger.info(f"Phase 1: Generating Reference Model Image (Gemini 3 Pro Preview) [Mode: {mode}]...")
         
+        # Inject context into Director
+        director_context = f"TARGET SCENE STYLE: {mode.upper()}\n"
+        if user_prompt and user_prompt.strip():
+            director_context += f"USER CUSTOM REQUIREMENTS: {user_prompt.strip()}\n"
+
         director_res = client.models.generate_content(
             model='gemini-3-pro-preview',
             contents=[
-                prompts.BETA_V2_DIRECTOR_PROMPT,
+                f"{prompts.BETA_V2_DIRECTOR_PROMPT}\n\nSTRICT CONTEXT:\n{director_context}",
                 types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
             ]
         )
@@ -68,14 +73,18 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             model_img_bytes = img_bytes
 
         # --- PHASE 2: GENERATE PROMPT LIST (Prompt Engineer) ---
-        logger.info(f"Phase 2: Engineering {count} Prompts (Gemini 3 Pro Preview)...")
+        logger.info(f"Phase 2: Engineering {count} Prompts (Gemini 3 Pro Preview) [Mode: {mode}]...")
         
+        engineer_context = f"REQUIRED CAMPAIGN THEME: {mode.upper()}\n"
+        if user_prompt and user_prompt.strip():
+            engineer_context += f"USER CUSTOM REQUIREMENTS: {user_prompt.strip()}\n"
+
         engineer_prompt = prompts.BETA_V2_ENGINEER_PROMPT.format(count=count)
         
         prompt_res = client.models.generate_content(
             model='gemini-3-pro-preview',
             contents=[
-                engineer_prompt,
+                f"{engineer_prompt}\n\nSTRICT CONTEXT:\n{engineer_context}",
                 types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),   # [Image 1: Product]
                 types.Part.from_bytes(data=model_img_bytes, mime_type='image/jpeg') # [Image 2: Context/Vibe]
             ]
