@@ -45,7 +45,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
 
     try:
         # --- PHASE 1: GENERATE REFERENCE MODEL IMAGE (Creative Director) ---
-        logger.info(f"Phase 1: Generating Reference Model Image (Gemini 3 Pro Preview) [Mode: {mode}]...")
+        logger.info(f"Phase 1: Generating Reference Model Image (Gemini 3 Pro Image) [Mode: {mode}]...")
         
         # Select the high-end rules based on mode
         mode_rules = getattr(prompts, f'MODE_RULES_{mode.upper()}', prompts.MODE_RULES_CREATIVE)
@@ -56,7 +56,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             director_prompt += f"\n\nADDITIONAL USER REQUIREMENT: {user_prompt.strip()}"
 
         director_res = client.models.generate_content(
-            model='gemini-3-pro-preview',
+            model='gemini-3-pro-image-preview',
             contents=[
                 director_prompt,
                 types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
@@ -116,7 +116,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
         # --- PHASE 3: EXECUTE FINAL IMAGES (Artist) ---
         results = []
         for i, p_text in enumerate(generated_prompts):
-            logger.info(f"Phase 3: Generating Final Image {i+1}/{len(generated_prompts)} (Gemini 3 Pro Preview)...")
+            logger.info(f"Phase 3: Generating Final Image {i+1}/{len(generated_prompts)} (Gemini 3 Pro Image)...")
             
             if i > 0: time.sleep(3) # Slightly longer delay for heavy Pro models
 
@@ -128,7 +128,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             
             try:
                 final_res = client.models.generate_content(
-                    model='gemini-3-pro-preview',
+                    model='gemini-3-pro-image-preview',
                     contents=[
                         artist_instruction,
                         types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),       # Input Image 1
