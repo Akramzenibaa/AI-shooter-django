@@ -31,6 +31,8 @@ def create_checkout(request, product_id):
     except Exception as e:
         # Log error and return to pricing
         import logging
+        import traceback
         logger = logging.getLogger(__name__)
-        logger.error(f"Error creating Polar checkout: {str(e)}")
+        logger.error(f"Error creating Polar checkout for product {product_id}: {str(e)}")
+        logger.error(traceback.format_exc())
         return redirect('core:pricing')
