@@ -3,12 +3,6 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Cleanup local media (Deployment Reset)
-echo "Cleaning up local media storage..."
-rm -rf media/generated_campaigns/* || true
-rm -rf media/originals/* || true
-
-# Run migrations
 # Run migrations
 echo "Run migrations..."
 python manage.py wait_for_db
