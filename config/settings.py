@@ -220,6 +220,7 @@ CLOUDINARY_STORAGE = {
 # Polar.sh Settings
 POLAR_ACCESS_TOKEN = os.getenv('POLAR_ACCESS_TOKEN', '')
 POLAR_WEBHOOK_SECRET = os.getenv('POLAR_WEBHOOK_SECRET', '')
+POLAR_ENVIRONMENT = os.getenv('POLAR_ENVIRONMENT', 'production') # 'production' or 'sandbox'
 # Mapping Polar product IDs to plans/credits
 POLAR_PRODUCT_MAP = {
     'd6054df6-a60b-4e43-a481-9edf31547ef3': {'plan': 'starter', 'credits': 40},

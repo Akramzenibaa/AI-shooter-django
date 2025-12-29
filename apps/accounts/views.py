@@ -16,8 +16,9 @@ def create_checkout(request, product_id):
         return redirect('core:pricing')
     
     try:
-        # Use sandbox URL if needed for testing, otherwise default is production
-        with Polar(access_token=settings.POLAR_ACCESS_TOKEN) as polar:
+        # Use sandbox server if POLAR_ENVIRONMENT is set to 'sandbox'
+        server = getattr(settings, 'POLAR_ENVIRONMENT', 'production')
+        with Polar(access_token=settings.POLAR_ACCESS_TOKEN, server=server) as polar:
             # We use the product_id passed from the template
             checkout = polar.checkouts.create(request={
                 "products": [product_id],
