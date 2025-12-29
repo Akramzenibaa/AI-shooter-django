@@ -21,7 +21,8 @@
                 <div class="credits">
                     <span class="credit-count"><span id="credit-value">{{ user.userprofile.credits|default:0 }}</span>
                         <span class="desktop-only">Credits</span></span>
-                    <button class="getmore" id="getmore-btn" aria-label="Get More">✨ Get More</button>
+                    <span class="plan-badge-ui">{{ user.userprofile.get_plan_type_display }}</span>
+                    <a href="{% url 'core:pricing' %}" class="getmore no-decoration" id="getmore-btn">✨ Get More</a>
                     <div class="getmore-panel hidden" id="getmore-panel">
                         <div class="getmore-title">Contact us to get more credits</div>
                         <div class="getmore-icons">

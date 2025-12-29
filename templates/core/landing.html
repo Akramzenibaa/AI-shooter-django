@@ -124,9 +124,9 @@
                 <div class="step-card delay-1">
                     <div class="step-number">02</div>
                     <div class="step-content">
-                        <h3 class="step-title">Process</h3>
-                        <p class="feature-desc">Sit back while our AI works its magic. It only takes a few seconds to
-                            deliver studio quality.</p>
+                        <h3 class="step-title">Choose Mode</h3>
+                        <p class="feature-desc">Select your desired generation mode: Campaign, On Model, or Clean
+                            Background, and sit back while our AI works its magic.</p>
                     </div>
                 </div>
                 <div class="step-card delay-2">
@@ -141,28 +141,138 @@
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="features-section">
+        <section id="features" class="features-section reveal-up">
+            <h2 class="section-title">Why Choose AI Shooter?</h2>
             <div class="grid stagger-container">
                 <div class="feature-card">
-                    <div class="feature-icon"><i data-lucide="zap"></i></div>
-                    <h3 class="feature-title">Instant Results</h3>
-                    <p class="feature-desc">Get studio-quality photos in seconds, not days. Our AI processes your images
-                        lightning fast.</p>
+                    <div class="feature-icon">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <h3 class="feature-title">Studio Quality</h3>
+                    <p class="feature-desc">Get professional lighting and shadows that make your products pop without
+                        expensive equipment.</p>
                 </div>
                 <div class="feature-card delay-1">
-                    <div class="feature-icon"><i data-lucide="camera"></i></div>
-                    <h3 class="feature-title">High Definition</h3>
-                    <p class="feature-desc">Crystal clear 4K resolution output suitable for any e-commerce platform or
-                        print media.</p>
+                    <div class="feature-icon">
+                        <i data-lucide="image"></i>
+                    </div>
+                    <h3 class="feature-title">AI Upscaling</h3>
+                    <p class="feature-desc">Transform standard shots into crisp 4K masterpieces ready for high-end
+                        marketing campaigns.</p>
                 </div>
                 <div class="feature-card delay-2">
-                    <div class="feature-icon"><i data-lucide="layers"></i></div>
-                    <h3 class="feature-title">Endless Variations</h3>
-                    <p class="feature-desc">Generate multiple backgrounds and settings from a single product photo
-                        automatically.</p>
+                    <div class="feature-icon">
+                        <i data-lucide="layers"></i>
+                    </div>
+                    <h3 class="feature-title">Multiple Modes</h3>
+                    <p class="feature-desc">Choose between creative campaigns, professional model integrations, or clean
+                        e-commerce backgrounds.</p>
                 </div>
             </div>
         </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section reveal-up">
+            <h2 class="section-title">Investment Plans</h2>
+            <p class="section-subtitle">Choose the plan that fits your creative scale.</p>
+
+            <div class="pricing-toggle">
+                <button class="toggle-btn active" data-type="subscription">Monthly Subscriptions</button>
+                <button class="toggle-btn" data-type="credit-pack">One-Time Credits</button>
+            </div>
+
+            <!-- Subscriptions Grid -->
+            <div id="subscription-grid" class="pricing-grid stagger-container visible">
+                <div class="pricing-card">
+                    <div class="plan-name">Starter Shop</div>
+                    <div class="plan-price">$39<span>/mo</span></div>
+                    <div class="plan-credits">40 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 40 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> 2K Resolution</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'd6054df6-a60b-4e43-a481-9edf31547ef3' %}"
+                        class="plan-btn">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-name">Growth Brand</div>
+                    <div class="plan-price">$99<span>/mo</span></div>
+                    <div class="plan-credits">140 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 140 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> Priority API Access</li>
+                        <li><i data-lucide="check"></i> 2K Resolution</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '0e0234e8-2f2e-48f2-a91f-d2328ceea170' %}"
+                        class="plan-btn primary">Elevate
+                        Now</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="plan-name">Agency Elite</div>
+                    <div class="plan-price">$199<span>/mo</span></div>
+                    <div class="plan-credits">320 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 320 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> 4K Resolution Ready</li>
+                        <li><i data-lucide="check"></i> Priority API Access</li>
+                        <li><i data-lucide="check"></i> Priority Support</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '2b6ead44-d6b8-4098-a8e0-91e0609c5e04' %}"
+                        class="plan-btn">Scale Now</a>
+                </div>
+            </div>
+
+
+            <!-- Credit Packs Grid -->
+            <div id="credit-pack-grid" class="pricing-grid stagger-container hidden">
+                <div class="pricing-card">
+                    <div class="plan-name">Trial Pack</div>
+                    <div class="plan-price">$12</div>
+                    <div class="plan-credits">10 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 10 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> No Subscription</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '5a1609dd-2475-4111-953a-220736586b2f' %}"
+                        class="plan-btn">Buy Now</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="plan-badge">Best Value</div>
+                    <div class="plan-name">Studio Pack</div>
+                    <div class="plan-price">$30</div>
+                    <div class="plan-credits">30 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 30 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> No Subscription</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'aafc1c0e-bd35-479d-bd16-7911f93a9bad' %}"
+                        class="plan-btn primary">Buy Now</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="plan-name">Pro Pack</div>
+                    <div class="plan-price">$79</div>
+                    <div class="plan-credits">100 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 100 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> Premium Support</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'd54fec1a-11b5-49ad-998f-3acc09459852' %}"
+                        class="plan-btn">Buy Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
 
         <!-- Final CTA -->
         <section class="hero-section reveal-up final-cta-section">
@@ -285,6 +395,30 @@
     // Elements to observe
     const animElements = document.querySelectorAll('.animate-on-scroll, .reveal-up, .stagger-container');
     animElements.forEach(el => observer.observe(el));
+
+    // Pricing Toggle Logic
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const subGrid = document.getElementById('subscription-grid');
+    const packGrid = document.getElementById('credit-pack-grid');
+
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (btn.dataset.type === 'subscription') {
+                subGrid.classList.remove('hidden');
+                subGrid.classList.add('visible');
+                packGrid.classList.remove('visible');
+                packGrid.classList.add('hidden');
+            } else {
+                packGrid.classList.remove('hidden');
+                packGrid.classList.add('visible');
+                subGrid.classList.remove('visible');
+                subGrid.classList.add('hidden');
+            }
+        });
+    });
 
     // Special case for hero stagger which should run immediately
     setTimeout(() => {

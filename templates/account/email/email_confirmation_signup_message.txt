@@ -1,0 +1,12 @@
+Hello!
+
+Welcome to AI Shooter! We're excited to help you transform your product photography with AI.
+
+To get started, please confirm your email address by clicking the link below:
+
+{{ activate_url }}
+
+If the link doesn't work, you can copy and paste it into your browser.
+
+Happy Creating,
+The AI Shooter Team

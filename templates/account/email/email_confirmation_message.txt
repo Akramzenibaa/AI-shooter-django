@@ -1,0 +1,8 @@
+Hello,
+
+Please confirm your email address for AI Shooter by clicking the link below:
+
+{{ activate_url }}
+
+Best regards,
+The AI Shooter Team

@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<style>
+    .pricing-page {
+        padding-top: 100px;
+        background: var(--bg-dark);
+        min-height: 100vh;
+    }
+
+    .pricing-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+    }
+
+    .pricing-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .pricing-header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .pricing-header p {
+        color: var(--text-muted);
+        font-size: 1.2rem;
+    }
+
+    .nav-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--glass-border);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pricing-page">
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="{% url 'core:landing' %}" class="logo" style="text-decoration: none;">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo" width="32" height="32">
+                <span>AI Shooter</span>
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'core:dashboard' %}" class="nav-btn no-decoration">Back to App</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <h1>Upgrade Your Creative Power</h1>
+            <p>Select a plan or a credit pack to continue creating magic.</p>
+        </div>
+
+        <section id="pricing" class="pricing-section" style="padding: 0;">
+            <div class="pricing-toggle">
+                <button class="toggle-btn active" data-type="subscription">Monthly Subscriptions</button>
+                <button class="toggle-btn" data-type="credit-pack">One-Time Credits</button>
+            </div>
+
+            <!-- Subscriptions Grid -->
+            <div id="subscription-grid" class="pricing-grid visible">
+                <div class="pricing-card">
+                    <div class="plan-name">Starter Shop</div>
+                    <div class="plan-price">$39<span>/mo</span></div>
+                    <div class="plan-credits">40 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 40 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> 2K Resolution</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'd6054df6-a60b-4e43-a481-9edf31547ef3' %}"
+                        class="plan-btn no-decoration">Choose Plan</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-name">Growth Brand</div>
+                    <div class="plan-price">$99<span>/mo</span></div>
+                    <div class="plan-credits">140 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 140 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> Priority API Access</li>
+                        <li><i data-lucide="check"></i> 2K Resolution</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '0e0234e8-2f2e-48f2-a91f-d2328ceea170' %}"
+                        class="plan-btn primary no-decoration">Choose Plan</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="plan-name">Agency Elite</div>
+                    <div class="plan-price">$199<span>/mo</span></div>
+                    <div class="plan-credits">320 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 320 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> 4K Resolution Ready</li>
+                        <li><i data-lucide="check"></i> Priority API Access</li>
+                        <li><i data-lucide="check"></i> Priority Support</li>
+                        <li><i data-lucide="check"></i> Cloud Storage</li>
+                        <li><i data-lucide="check"></i> Commercial Rights</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '2b6ead44-d6b8-4098-a8e0-91e0609c5e04' %}"
+                        class="plan-btn no-decoration">Choose Plan</a>
+                </div>
+            </div>
+
+            <!-- Credit Packs Grid -->
+            <div id="credit-pack-grid" class="pricing-grid hidden">
+                <div class="pricing-card">
+                    <div class="plan-name">Trial Pack</div>
+                    <div class="plan-price">$12</div>
+                    <div class="plan-credits">10 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 10 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> No Subscription</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' '5a1609dd-2475-4111-953a-220736586b2f' %}"
+                        class="plan-btn no-decoration">Buy
+                        Pack</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="plan-badge">Best Value</div>
+                    <div class="plan-name">Studio Pack</div>
+                    <div class="plan-price">$30</div>
+                    <div class="plan-credits">30 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 30 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> No Subscription</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'aafc1c0e-bd35-479d-bd16-7911f93a9bad' %}"
+                        class="plan-btn primary no-decoration">Buy Pack</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="plan-name">Pro Pack</div>
+                    <div class="plan-price">$79</div>
+                    <div class="plan-credits">100 <span>Credits</span></div>
+                    <ul class="plan-features">
+                        <li><i data-lucide="check"></i> 100 High-Res PNGs</li>
+                        <li><i data-lucide="check"></i> Premium Support</li>
+                        <li><i data-lucide="check"></i> Valid Forever</li>
+                    </ul>
+                    <a href="{% url 'accounts:create_checkout' 'd54fec1a-11b5-49ad-998f-3acc09459852' %}"
+                        class="plan-btn no-decoration">Buy
+                        Pack</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    lucide.createIcons();
+
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const subGrid = document.getElementById('subscription-grid');
+    const packGrid = document.getElementById('credit-pack-grid');
+
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (btn.dataset.type === 'subscription') {
+                subGrid.classList.remove('hidden');
+                subGrid.classList.add('visible');
+                packGrid.classList.remove('visible');
+                packGrid.classList.add('hidden');
+            } else {
+                packGrid.classList.remove('hidden');
+                packGrid.classList.add('visible');
+                subGrid.classList.remove('visible');
+                subGrid.classList.add('hidden');
+            }
+        });
+    });
+</script>
+{% endblock %}

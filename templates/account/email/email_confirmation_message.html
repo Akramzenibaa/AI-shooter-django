@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #6366f1;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>Hello,</p>
+        <p>Please confirm your email address for AI Shooter by clicking the button below:</p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ activate_url }}" class="button" style="color: #ffffff;">Confirm Email</a>
+        </div>
+        <p>Or use this link: <br> <a href="{{ activate_url }}">{{ activate_url }}</a></p>
+        <div class="footer">
+            <p>&copy; 2025 AI Shooter Team</p>
+        </div>
+    </div>
+</body>
+
+</html>

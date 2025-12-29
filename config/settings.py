@@ -217,6 +217,19 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
 }
 
+# Polar.sh Settings
+POLAR_ACCESS_TOKEN = os.getenv('POLAR_ACCESS_TOKEN', '')
+POLAR_WEBHOOK_SECRET = os.getenv('POLAR_WEBHOOK_SECRET', '')
+# Mapping Polar product IDs to plans/credits
+POLAR_PRODUCT_MAP = {
+    'd6054df6-a60b-4e43-a481-9edf31547ef3': {'plan': 'starter', 'credits': 40},
+    '0e0234e8-2f2e-48f2-a91f-d2328ceea170': {'plan': 'growth', 'credits': 140},
+    '2b6ead44-d6b8-4098-a8e0-91e0609c5e04': {'plan': 'agency', 'credits': 320},
+    '5a1609dd-2475-4111-953a-220736586b2f': {'credits': 10}, # Trial Pack
+    'aafc1c0e-bd35-479d-bd16-7911f93a9bad': {'credits': 30}, # Studio Pack
+    'd54fec1a-11b5-49ad-998f-3acc09459852': {'credits': 100}, # Pro Pack
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

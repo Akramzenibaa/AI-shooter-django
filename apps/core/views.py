@@ -21,3 +21,6 @@ def terms(request):
 
 def blog(request):
     return render(request, 'core/blog.html')
+
+def pricing(request):
+    return render(request, 'core/pricing.html')

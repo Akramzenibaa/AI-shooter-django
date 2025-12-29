@@ -28,11 +28,15 @@ class GeneratedImageInline(admin.TabularInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline, GeneratedImageInline)
-    list_display = BaseUserAdmin.list_display + ('get_credits',)
+    list_display = BaseUserAdmin.list_display + ('get_credits', 'get_plan')
 
     def get_credits(self, obj):
         return obj.userprofile.credits
     get_credits.short_description = 'Credits'
+
+    def get_plan(self, obj):
+        return obj.userprofile.get_plan_type_display()
+    get_plan.short_description = 'Plan'
 
 # Re-register User with new capabilities
 admin.site.unregister(User)

@@ -23,7 +23,7 @@ cloudinary.config(
 
 logger = logging.getLogger(__name__)
 
-def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=''):
+def generate_campaign_images(image_input, count=1, mode='creative', user_prompt='', plan='free'):
     """
     Production-grade service using the latest google-genai SDK.
     Optimized for Free Tier with model splitting and throttling.
@@ -160,14 +160,30 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                     # 1. Upload to Cloudinary (Primary)
                     cloudinary_url = None
                     try:
+                        # Prepare transformations based on plan
+                        transformation = []
+                        if plan == 'agency':
+                            # High-end resolution scaling (4K Ultra)
+                            transformation = [
+                                {'effect': "upscale"},
+                                {'width': 4096, 'crop': "scale"} # Force 4K
+                            ]
+                        elif plan in ['growth', 'starter']:
+                            # Professional resolution scaling (2K High)
+                            transformation = [
+                                {'effect': "upscale"},
+                                {'width': 2048, 'crop': "scale"} # Force 2K
+                            ]
+
                         upload_res = cloudinary.uploader.upload(
                             final_img_bytes,
                             folder="generated_campaigns",
                             public_id=filename.replace('.png', ''),
-                            format="png"
+                            format="png",
+                            transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
-                        logger.info(f"Success! Final Image {i+1} uploaded to Cloudinary.")
+                        logger.info(f"Success! Final Image {i+1} uploaded to Cloudinary (Plan: {plan}).")
                     except Exception as e:
                         logger.error(f"Cloudinary upload failed: {str(e)}")
 
