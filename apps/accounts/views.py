@@ -21,14 +21,18 @@ def create_checkout(request, product_id):
         return redirect('core:pricing')
     
     try:
-        # DBG: Log token prefix to verify update
-        token_prefix = settings.POLAR_ACCESS_TOKEN[:15] if settings.POLAR_ACCESS_TOKEN else "None"
+        # DBG: Log token length and prefix to verify update
+        raw_token = settings.POLAR_ACCESS_TOKEN
+        clean_token = raw_token.strip() if raw_token else ""
+        token_prefix = clean_token[:15] if clean_token else "None"
+        token_len = len(raw_token) if raw_token else 0
+        
         server = getattr(settings, 'POLAR_ENVIRONMENT', 'production')
         logger = logging.getLogger(__name__)
-        logger.info(f"DEBUG: Using Polar Token: {token_prefix}..., Env: {server}")
+        logger.info(f"DEBUG: Token Length: {token_len}, Prefix: {token_prefix}..., Env: {server}")
 
         # Use sandbox server if POLAR_ENVIRONMENT is set to 'sandbox'
-        with Polar(access_token=settings.POLAR_ACCESS_TOKEN, server=server) as polar:
+        with Polar(access_token=clean_token, server=server) as polar:
             # We use the product_id passed from the template
             checkout_request = {
                 "products": [product_id],
