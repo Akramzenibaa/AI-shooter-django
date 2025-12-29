@@ -187,13 +187,19 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                     except Exception as e:
                         logger.error(f"Cloudinary upload failed: {str(e)}")
 
-                    # 2. Local Backup Save
-                    filepath = os.path.join(output_dir, filename)
-                    with open(filepath, 'wb') as f:
-                        f.write(final_img_bytes)
                     
-                    # URL logic: Use Cloudinary if available, otherwise fallback to local
-                    final_url = cloudinary_url if cloudinary_url else f"{settings.MEDIA_URL}generated_campaigns/{filename}"
+                    # 2. URL resolution and Fallback Storage
+                    if cloudinary_url:
+                        final_url = cloudinary_url
+                        filepath = f"cloud:{filename}" # Logical path for reference
+                    else:
+                        # Fallback: Save locally ONLY if Cloudinary failed
+                        filepath = os.path.join(output_dir, filename)
+                        with open(filepath, 'wb') as f:
+                            f.write(final_img_bytes)
+                        
+                        final_url = f"{settings.MEDIA_URL}generated_campaigns/{filename}"
+                        logger.warning(f"Cloudinary upload failed for {filename}, falling back to local storage.")
                     
                     results.append({
                         'path': filepath,
