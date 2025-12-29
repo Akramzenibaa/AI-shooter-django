@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import logging
+import traceback
 from polar_sdk import Polar
 
 def profile(request):
@@ -43,8 +44,6 @@ def create_checkout(request, product_id):
             return redirect(checkout.url)
     except Exception as e:
         # Log error and return to pricing
-        import logging
-        import traceback
         logger = logging.getLogger(__name__)
         logger.error(f"Error creating Polar checkout for product {product_id}: {str(e)}")
         logger.error(traceback.format_exc())
