@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+import logging
 from polar_sdk import Polar
 
 def profile(request):
