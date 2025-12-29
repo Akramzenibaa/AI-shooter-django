@@ -34,25 +34,41 @@ def polar_webhook(request):
             # Handle successful payment or subscription
             product_id = data.get('product_id')
             customer_email = data.get('customer_email')
+            metadata = data.get('metadata', {})
+            user_id = metadata.get('user_id')
             
             # Map product to plan/credits
             plan_info = settings.POLAR_PRODUCT_MAP.get(product_id)
             
-            if plan_info and customer_email:
+            if plan_info:
                 try:
-                    user = User.objects.get(email=customer_email)
-                    profile = user.userprofile
+                    user = None
+                    # 1. Try to find user by ID (most reliable)
+                    if user_id:
+                        try:
+                            user = User.objects.get(id=user_id)
+                        except (User.DoesNotExist, ValueError):
+                            logger.warning(f"User ID {user_id} from metadata not found")
+
+                    # 2. Fallback to email if user not found by ID
+                    if not user and customer_email:
+                        user = User.objects.get(email=customer_email)
                     
-                    # Update plan if provided
-                    if 'plan' in plan_info:
-                        profile.plan_type = plan_info['plan']
-                    
-                    # Add credits
-                    if 'credits' in plan_info:
-                        profile.credits += plan_info['credits']
-                    
-                    profile.save()
-                    logger.info(f"Successfully updated user {customer_email} with plan/credits from product {product_id}")
+                    if user:
+                        profile = user.userprofile
+                        
+                        # Update plan if provided
+                        if 'plan' in plan_info:
+                            profile.plan_type = plan_info['plan']
+                        
+                        # Add credits
+                        if 'credits' in plan_info:
+                            profile.credits += plan_info['credits']
+                        
+                        profile.save()
+                        logger.info(f"Successfully updated user {user.email} (ID: {user.id}) with plan/credits from product {product_id}")
+                    else:
+                        logger.error(f"Could not find user for Polar event. Email: {customer_email}, ID: {user_id}")
                     
                 except User.DoesNotExist:
                     logger.error(f"User with email {customer_email} not found for Polar event")
