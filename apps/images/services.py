@@ -60,6 +60,10 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
         product_img.save(buffered, format="JPEG")
         img_bytes = buffered.getvalue()
 
+        # IMPORTANT: Seek back to 0 so other parts of the app can read the file
+        if hasattr(image_input, 'seek'):
+            image_input.seek(0)
+
     except Exception as e:
         logger.error(f"Error loading image: {e}")
         return []
@@ -182,10 +186,9 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         
                         logger.info(f"Uploading to Cloudinary [Plan: {plan}, File: {filename}]...")
                         
-                        # Use BytesIO for upload
-                        upload_stream = BytesIO(final_img_bytes)
+                        # Use raw bytes for upload as it's more stable in some environments
                         upload_res = cloudinary.uploader.upload(
-                            upload_stream,
+                            final_img_bytes,
                             folder="generated_campaigns",
                             resource_type="image",
                             transformation=transformation
