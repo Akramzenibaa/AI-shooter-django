@@ -189,7 +189,8 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                             upload_res = cloudinary.uploader.upload(
                                 BytesIO(final_img_bytes),
                                 folder="generated_campaigns",
-                                resource_type="image"
+                                resource_type="image",
+                                format='png'
                             )
                             cloudinary_url = upload_res.get('secure_url')
                         except Exception as upload_err:
@@ -225,7 +226,8 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                                     upload_res = cloudinary.uploader.upload(
                                         BytesIO(final_img_bytes),
                                         folder="generated_campaigns",
-                                        resource_type="image"
+                                        resource_type="image",
+                                        format='png'
                                     )
                                     cloudinary_url = upload_res.get('secure_url')
                             else:

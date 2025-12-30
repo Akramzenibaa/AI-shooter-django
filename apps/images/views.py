@@ -74,10 +74,14 @@ def task_status(request, task_id):
     plan = request.user.userprofile.plan_type
     res_limit = "w_4096" if plan == 'agency' else "w_2048"
     
+    logger.info(f"Task status: User plan is '{plan}', using resolution limit: {res_limit}")
+    
     high_res_urls = []
     for url in urls:
         if 'cloudinary.com' in url and '/upload/' in url:
-            high_res_urls.append(url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best,f_png/'))
+            high_res_url = url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best,f_png/')
+            high_res_urls.append(high_res_url)
+            logger.info(f"Generated high-res URL: {high_res_url}")
         else:
             high_res_urls.append(url)
 
