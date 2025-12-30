@@ -13,7 +13,16 @@ from . import prompts
 import cloudinary
 import cloudinary.uploader
 
-# Cloudinary is configured dynamically inside the service function to ensure environment variables are loaded.
+# Configure Cloudinary
+if hasattr(settings, 'CLOUDINARY_STORAGE'):
+    c_config = settings.CLOUDINARY_STORAGE
+    if c_config.get('CLOUD_NAME'):
+        cloudinary.config(
+            cloud_name=c_config.get('CLOUD_NAME'),
+            api_key=c_config.get('API_KEY'),
+            api_secret=c_config.get('API_SECRET'),
+            secure=True
+        )
 
 logger = logging.getLogger(__name__)
 
@@ -23,25 +32,6 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     Optimized for Free Tier with model splitting and throttling.
     Modes: 'creative', 'model', 'background'
     """
-    # 0. Dynamic Configuration Check & Sanitization
-    c_config = getattr(settings, 'CLOUDINARY_STORAGE', {})
-    cloud_name = str(c_config.get('CLOUD_NAME') or '').strip()
-    api_key = str(c_config.get('API_KEY') or '').strip()
-    api_secret = str(c_config.get('API_SECRET') or '').strip()
-
-    if not cloud_name or not api_key:
-        logger.error("CRITICAL: Cloudinary credentials missing or empty in settings!")
-    else:
-        # Don't log the api_key/secret for security
-        logger.info(f"Connecting to Cloudinary: {cloud_name}")
-
-    cloudinary.config(
-        cloud_name=cloud_name,
-        api_key=api_key,
-        api_secret=api_secret,
-        secure=True
-    )
-
     client = genai.Client(api_key=settings.GOOGLE_API_KEY)
     
     # Load image
@@ -184,9 +174,9 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         elif plan in ['growth', 'starter']:
                             transformation = [{'width': 2048, 'crop': "scale"}]
                         
-                        logger.info(f"Uploading to Cloudinary [Plan: {plan}, File: {filename}]...")
+                        logger.info(f"Uploading Image {i+1} to Cloudinary...")
                         
-                        # Use raw bytes for upload as it's more stable in some environments
+                        # Use bytes directly for the upload
                         upload_res = cloudinary.uploader.upload(
                             final_img_bytes,
                             folder="generated_campaigns",
