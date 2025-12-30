@@ -24,14 +24,15 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     Modes: 'creative', 'model', 'background'
     """
     # 0. Dynamic Configuration Check & Sanitization
-    c_config = settings.CLOUDINARY_STORAGE
-    cloud_name = str(c_config.get('CLOUD_NAME', '')).strip()
-    api_key = str(c_config.get('API_KEY', '')).strip()
-    api_secret = str(c_config.get('API_SECRET', '')).strip()
+    c_config = getattr(settings, 'CLOUDINARY_STORAGE', {})
+    cloud_name = str(c_config.get('CLOUD_NAME') or '').strip()
+    api_key = str(c_config.get('API_KEY') or '').strip()
+    api_secret = str(c_config.get('API_SECRET') or '').strip()
 
     if not cloud_name or not api_key:
         logger.error("CRITICAL: Cloudinary credentials missing or empty in settings!")
     else:
+        # Don't log the api_key/secret for security
         logger.info(f"Connecting to Cloudinary: {cloud_name}")
 
     cloudinary.config(
@@ -175,25 +176,19 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         # Prepare transformations based on plan
                         transformation = []
                         if plan == 'agency':
-                            transformation = [
-                                {'width': 4096, 'crop': "scale"}
-                            ]
+                            transformation = [{'width': 4096, 'crop': "scale"}]
                         elif plan in ['growth', 'starter']:
-                            transformation = [
-                                {'width': 2048, 'crop': "scale"}
-                            ]
+                            transformation = [{'width': 2048, 'crop': "scale"}]
                         
-                        logger.info(f"Uploading to Cloudinary [Plan: {plan}]...")
-
+                        logger.info(f"Uploading to Cloudinary [Plan: {plan}, File: {filename}]...")
+                        
                         # Use BytesIO for upload
                         upload_stream = BytesIO(final_img_bytes)
-                        
-                        logger.info(f"Uploading to Cloudinary [File: {filename}]...")
-                        
                         upload_res = cloudinary.uploader.upload(
                             upload_stream,
                             folder="generated_campaigns",
-                            resource_type="image"
+                            resource_type="image",
+                            transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
                         logger.info(f"Cloudinary Upload Success: {cloudinary_url}")
