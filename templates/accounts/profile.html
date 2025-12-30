@@ -156,7 +156,7 @@
             <div class="form-group">
                 <label class="form-label" for="phone_number">Phone Number</label>
                 <input type="tel" name="phone_number" id="phone_number" class="form-input"
-                    placeholder="+1 (555) 000-0000" value="{{ user_profile.phone_number|default:'' }}">
+                    placeholder="+1 (555) 000-0000" value="{{ user_profile.phone_number|default:'' }}" required>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
                     We'll use this for order updates and support.
                 </p>
