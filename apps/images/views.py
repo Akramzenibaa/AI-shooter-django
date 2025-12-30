@@ -38,13 +38,18 @@ def generate_image(request):
             user_profile.credits -= count
             user_profile.save()
             
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Credits deducted. New balance: {user_profile.credits}")
+            
             for res in results:
-                GeneratedImage.objects.create(
+                img_obj = GeneratedImage.objects.create(
                     user=request.user,
                     original_image=image_file,
                     image_url=res['url'],
                     count=count
                 )
+                logger.info(f"GeneratedImage saved to DB: ID {img_obj.id}, URL {res['url']}")
                 
             return JsonResponse({
                 'status': 'success',
