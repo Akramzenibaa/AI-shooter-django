@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < imgCount; i++) {
             const skeleton = document.createElement('div');
             skeleton.className = 'thumb-wrap skeleton';
-            skeleton.style.aspectRatio = '1 / 1.5';
+            skeleton.style.aspectRatio = '2 / 3'; // Standard portrait ratio for Gemini images
+            skeleton.innerHTML = '<div class="spinner-mini"></div>';
             resultsGallery.appendChild(skeleton);
         }
 
