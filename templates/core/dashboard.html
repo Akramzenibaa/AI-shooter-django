@@ -20,7 +20,7 @@
                 {% else %}
                 <div class="credits desktop-only">
                     <span class="credit-count"><span id="credit-value">{{ user.userprofile.credits|default:0 }}</span>
-                        <span class="desktop-only">Credits</span></span>
+                        Credits</span>
                     <span class="plan-badge-ui">{{ user.userprofile.get_plan_type_display }}</span>
                     <a href="{% url 'core:pricing' %}" class="getmore no-decoration" id="getmore-btn">✨ Get More</a>
                 </div>
@@ -36,11 +36,11 @@
                     </form>
                 </div>
                 {% endif %}
-
-                <button class="hamburger-btn mobile-only" id="hamburger-menu" aria-label="Menu">
-                    <i data-lucide="menu"></i>
-                </button>
             </div>
+
+            <button class="hamburger-btn mobile-only" id="hamburger-menu" aria-label="Menu">
+                <i data-lucide="menu"></i>
+            </button>
         </div>
     </header>
 
