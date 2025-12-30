@@ -77,7 +77,7 @@ def task_status(request, task_id):
     high_res_urls = []
     for url in urls:
         if 'cloudinary.com' in url and '/upload/' in url:
-            high_res_urls.append(url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best/'))
+            high_res_urls.append(url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best,f_png/'))
         else:
             high_res_urls.append(url)
 
