@@ -15,7 +15,7 @@ python manage.py collectstatic --noinput
 
 # Start Huey background consumer
 echo "Starting Huey consumer..."
-python manage.py run_huey &
+python manage.py djangohuey &
 
 # Start server
 echo "Starting Gunicorn..."

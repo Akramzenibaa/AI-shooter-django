@@ -57,7 +57,7 @@ def task_status(request, task_id):
     # This requires reaching into Huey's result store
     # Given we use django-huey, we can use the result() method
     from django_huey import get_queue
-    queue = get_queue('apps.images')
+    queue = get_queue('default')
     result = queue.result(task_id)
     
     if result is None:
