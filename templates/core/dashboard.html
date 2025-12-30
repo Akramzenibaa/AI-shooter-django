@@ -129,7 +129,7 @@
                 <!-- Server rendered history -->
                 {% for img in history %}
                 <div class="history-item">
-                    <img src="{{ img.image_url }}" alt="History">
+                    <img src="{{ img.thumbnail_url|default:img.image_url }}" alt="History" loading="lazy">
                     <a href="{{ img.image_url }}" download class="dl-icon" title="Download">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                             <path fillRule="evenodd"
