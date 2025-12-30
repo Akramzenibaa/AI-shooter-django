@@ -102,13 +102,14 @@ DATABASES = {
 }
 
 # Advanced Connection Pooling (Postgres only)
-if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
-    DATABASES['default']['ENGINE'] = 'dj_db_conn_pool.backends.postgresql'
-    DATABASES['default']['POOL_OPTIONS'] = {
-        'POOL_SIZE': 10,
-        'MAX_OVERFLOW': 10,
-        'RECYCLE': 24 * 60 * 60, # 1 day
-    }
+# Disabled - Django's built-in connection pooling via conn_max_age is sufficient
+# if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+#     DATABASES['default']['ENGINE'] = 'dj_db_conn_pool.backends.postgresql'
+#     DATABASES['default']['POOL_OPTIONS'] = {
+#         'POOL_SIZE': 10,
+#         'MAX_OVERFLOW': 10,
+#         'RECYCLE': 24 * 60 * 60, # 1 day
+#     }
 
 
 # Password validation
