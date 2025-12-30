@@ -324,105 +324,121 @@
 
 {% block extra_js %}
 <script>
-    // Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
+    document.addEventListener('DOMContentLoaded', () => {
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Comparison Slider Logic
+        const slider = document.getElementById('comparison-slider');
+        const beforeImg = document.getElementById('before-img');
+        const handle = document.getElementById('slider-handle');
+        const beforeLabel = document.getElementById('before-label');
+        const afterLabel = document.getElementById('after-label');
+
+        let isResizing = false;
+
+        if (slider && beforeImg && handle) {
+            function setPosition(x) {
+                const rect = slider.getBoundingClientRect();
+                const offsetX = x - rect.left;
+                const position = Math.min(Math.max((offsetX / rect.width) * 100, 0), 100);
+
+                beforeImg.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
+                handle.style.left = `${position}%`;
+
+                if (beforeLabel) beforeLabel.style.opacity = position > 10 ? 1 : 0;
+                if (afterLabel) afterLabel.style.opacity = position < 90 ? 1 : 0;
+            }
+
+            slider.addEventListener('mousedown', () => isResizing = true);
+            window.addEventListener('mouseup', () => isResizing = false);
+            window.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                setPosition(e.clientX);
+            });
+
+            // Touch support
+            slider.addEventListener('touchstart', () => isResizing = true);
+            window.addEventListener('touchend', () => isResizing = false);
+            window.addEventListener('touchmove', (e) => {
+                if (!isResizing) return;
+                setPosition(e.touches[0].clientX);
+            });
+
+            // Initial position
+            setTimeout(() => {
+                const rect = slider.getBoundingClientRect();
+                if (rect.width > 0) {
+                    setPosition(rect.left + rect.width / 2);
+                }
+            }, 300);
+        }
+
+        // Initialize Lucide icons safely
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         } else {
-            navbar.classList.remove('scrolled');
+            // Fallback for deferred script
+            window.addEventListener('load', () => {
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Elements to observe
+        const animElements = document.querySelectorAll('.animate-on-scroll, .reveal-up, .stagger-container');
+        animElements.forEach(el => observer.observe(el));
+
+        // Pricing Toggle Logic
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const subGrid = document.getElementById('subscription-grid');
+        const packGrid = document.getElementById('credit-pack-grid');
+
+        if (toggleBtns.length > 0) {
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    toggleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    if (btn.dataset.type === 'subscription') {
+                        if (subGrid) { subGrid.classList.remove('hidden'); subGrid.classList.add('visible'); }
+                        if (packGrid) { packGrid.classList.remove('visible'); packGrid.classList.add('hidden'); }
+                    } else {
+                        if (packGrid) { packGrid.classList.remove('hidden'); packGrid.classList.add('visible'); }
+                        if (subGrid) { subGrid.classList.remove('visible'); subGrid.classList.add('hidden'); }
+                    }
+                });
+            });
+        }
+
+        // Special case for hero stagger which should run immediately
+        const heroStagger = document.getElementById('hero-stagger');
+        if (heroStagger) {
+            setTimeout(() => {
+                heroStagger.classList.add('visible');
+            }, 100);
         }
     });
-
-    // Comparison Slider Logic
-    const slider = document.getElementById('comparison-slider');
-    const beforeImg = document.getElementById('before-img');
-    const handle = document.getElementById('slider-handle');
-    const beforeLabel = document.getElementById('before-label');
-    const afterLabel = document.getElementById('after-label');
-
-    let isResizing = false;
-
-    function setPosition(x) {
-        const rect = slider.getBoundingClientRect();
-        const offsetX = x - rect.left;
-        const position = Math.min(Math.max((offsetX / rect.width) * 100, 0), 100);
-
-        beforeImg.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
-        handle.style.left = `${position}%`;
-
-        beforeLabel.style.opacity = position > 10 ? 1 : 0;
-        afterLabel.style.opacity = position < 90 ? 1 : 0;
-    }
-
-    slider.addEventListener('mousedown', () => isResizing = true);
-    window.addEventListener('mouseup', () => isResizing = false);
-    window.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        setPosition(e.clientX);
-    });
-
-    // Touch support
-    slider.addEventListener('touchstart', () => isResizing = true);
-    window.addEventListener('touchend', () => isResizing = false);
-    window.addEventListener('touchmove', (e) => {
-        if (!isResizing) return;
-        setPosition(e.touches[0].clientX);
-    });
-
-    // Initial position
-    setPosition(slider.getBoundingClientRect().left + slider.getBoundingClientRect().width / 2);
-
-    // Initialize Lucide icons
-    lucide.createIcons();
-
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Once visible, we can stop observing
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    // Elements to observe
-    const animElements = document.querySelectorAll('.animate-on-scroll, .reveal-up, .stagger-container');
-    animElements.forEach(el => observer.observe(el));
-
-    // Pricing Toggle Logic
-    const toggleBtns = document.querySelectorAll('.toggle-btn');
-    const subGrid = document.getElementById('subscription-grid');
-    const packGrid = document.getElementById('credit-pack-grid');
-
-    toggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            toggleBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            if (btn.dataset.type === 'subscription') {
-                subGrid.classList.remove('hidden');
-                subGrid.classList.add('visible');
-                packGrid.classList.remove('visible');
-                packGrid.classList.add('hidden');
-            } else {
-                packGrid.classList.remove('hidden');
-                packGrid.classList.add('visible');
-                subGrid.classList.remove('visible');
-                subGrid.classList.add('hidden');
-            }
-        });
-    });
-
-    // Special case for hero stagger which should run immediately
-    setTimeout(() => {
-        document.getElementById('hero-stagger').classList.add('visible');
-    }, 100);
 </script>
 {% endblock %}
