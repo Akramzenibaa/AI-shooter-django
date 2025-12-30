@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page">
+    <header class="topbar" id="navbar">
+        <div class="topbar-content">
+            <a href="{% url 'core:landing' %}" class="logo logo-auth">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo">
+                <span>AI Shooter</span>
+            </a>
+
+            <div class="topbar-actions">
+                <div class="flex-gap-small">
+                    <a href="{% url 'core:dashboard' %}" class="btn small secondary">Back to App</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem; font-weight: 700;">Full History</h1>
+                <div style="color: var(--text-dim); font-size: 0.9rem;">{{ history|length }} images total</div>
+            </div>
+
+            {% if history %}
+            <div class="history-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
+                {% for img in history %}
+                <div class="history-item">
+                    <img src="{{ img.thumbnail_url|default:img.image_url }}" alt="History" loading="lazy" style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; cursor: pointer;" onclick="openModal('{{ img.high_res_url|default:img.image_url }}')">
+                    <a href="{{ img.high_res_url|default:img.image_url }}" download class="dl-icon" title="Download">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path fillRule="evenodd"
+                                d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-2.25a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H4.5a3 3 0 01-3-3v-2.25a.75.75 0 01.75-.75z"
+                                clipRule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="history-empty" style="text-align: center; padding: 4rem 2rem; background: var(--card-bg); border-radius: 20px;">
+                <p>No history yet. Start generating some magic!</p>
+                <a href="{% url 'core:dashboard' %}" class="btn" style="margin-top: 1rem;">Go to App</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <div class="modal hidden" id="image-modal">
+        <img id="modal-img" src="" alt="Full view">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+
+    function openModal(url) {
+        modalImg.src = url;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    modal.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    });
+</script>
+{% endblock %}

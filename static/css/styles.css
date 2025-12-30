@@ -352,6 +352,19 @@ body {
     color: var(--text-muted);
 }
 
+.history-view-all {
+    font-size: 0.85rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.history-view-all:hover {
+    color: var(--secondary);
+    text-shadow: 0 0 8px var(--secondary-glow);
+}
+
 .history-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

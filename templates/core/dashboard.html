@@ -74,6 +74,9 @@
                 <a href="{% url 'core:pricing' %}" class="getmore-drawer no-decoration">✨ Get More Credits</a>
             </div>
             <div class="drawer-links">
+                <a href="{% url 'core:history' %}" class="drawer-link">
+                    <i data-lucide="image"></i> History
+                </a>
                 <a href="{% url 'core:landing' %}" class="drawer-link">
                     <i data-lucide="home"></i> Home
                 </a>
@@ -177,7 +180,9 @@
         <aside class="history-sidebar">
             <div class="history-header">
                 <div class="history-title">History</div>
-                <div class="history-subtitle">Locally saved</div>
+                {% if history %}
+                <a href="{% url 'core:history' %}" class="history-view-all">View All</a>
+                {% endif %}
             </div>
             <div class="history-grid" id="history-grid">
                 <!-- Server rendered history -->
