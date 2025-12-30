@@ -122,32 +122,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (response.ok) {
-                statusMsg.textContent = 'Images generated successfully';
-                generatingCard.style.display = 'none';
-                resultsCard.style.display = 'block';
+            if (response.ok && data.status === 'queued') {
+                const taskId = data.task_id;
 
-                // Render Gallery (Append to session history)
-                data.urls.forEach(url => {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'thumb-wrap';
-                    wrap.innerHTML = `
-                        <img src="${url}" alt="Generated image" loading="lazy">
-                        <a href="${url}" download class="dl-icon" title="Download">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                                <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-2.25a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H4.5a3 3 0 01-3-3v-2.25a.75.75 0 01.75-.75z" clipRule="evenodd" />
-                            </svg>
-                        </a>
-                    `;
-                    resultsGallery.prepend(wrap);
-                });
-
-
-                // Update Credits in UI (Session)
+                // Update credits in UI immediately
                 const creditValueEl = document.getElementById('credit-value');
                 if (creditValueEl && data.new_credits !== undefined) {
                     creditValueEl.textContent = data.new_credits;
                 }
+
+                // Start polling
+                pollTaskStatus(taskId);
             } else {
                 throw new Error(data.error || 'Generation failed');
             }
@@ -155,26 +140,77 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMsg.textContent = error.message;
             errorMsg.style.display = 'block';
             statusMsg.textContent = '';
-        } finally {
-            console.log("Generation process finished. Re-enabling UI.");
-            generatingCard.style.display = 'none';
-
-            // Explicitly force re-enable
             generateBtn.disabled = false;
-            generateBtn.removeAttribute('disabled');
-            generateBtn.style.opacity = '1';
-            generateBtn.style.filter = 'none';
             generateBtn.textContent = 'Generate';
-
-            dropzone.style.pointerEvents = 'auto';
-            dropzone.style.opacity = '1';
-
-            // Re-check file to be sure
-            if (selectedFile) {
-                generateBtn.classList.remove('loading'); // Use class if needed
-            }
+            generatingCard.style.display = 'none';
         }
     });
+
+    // New Polling Function
+    async function pollTaskStatus(taskId) {
+        const pollInterval = 3000; // 3 seconds
+        let attempts = 0;
+        const maxAttempts = 60; // 3 minutes total
+
+        const checkStatus = async () => {
+            try {
+                const res = await fetch(`/images/status/${taskId}/`);
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    statusMsg.textContent = 'Images generated successfully';
+                    generatingCard.style.display = 'none';
+                    resultsCard.style.display = 'block';
+
+                    // Render Gallery
+                    data.urls.forEach(url => {
+                        const wrap = document.createElement('div');
+                        wrap.className = 'thumb-wrap';
+                        wrap.innerHTML = `
+                            <img src="${url}" alt="Generated image" loading="lazy">
+                            <a href="${url}" download class="dl-icon" title="Download">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                    <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-2.25a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H4.5a3 3 0 01-3-3v-2.25a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                </svg>
+                            </a>
+                        `;
+                        resultsGallery.prepend(wrap);
+                    });
+
+                    resetUI();
+                } else if (data.status === 'error') {
+                    throw new Error(data.message || 'Background task failed');
+                } else {
+                    // Still processing
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(checkStatus, pollInterval);
+                    } else {
+                        throw new Error("Task timed out. Please check your history in a moment.");
+                    }
+                }
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+                statusMsg.textContent = '';
+                resetUI();
+            }
+        };
+
+        checkStatus();
+    }
+
+    function resetUI() {
+        generatingCard.style.display = 'none';
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate';
+        dropzone.style.pointerEvents = 'auto';
+        dropzone.style.opacity = '1';
+    }
+
+
+
+
 
 
 
@@ -245,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+
         return cookieValue;
     }
 });

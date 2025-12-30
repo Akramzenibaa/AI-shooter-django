@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'cloudinary',
+    'django_huey',
 
     # Local apps
     'apps.core',
@@ -260,3 +261,26 @@ LOGGING = {
         },
     },
 }
+# Huey Configuration (Background Tasks)
+# Using the database as a broker (no Redis needed)
+DJANGO_HUEY = {
+    'default': 'apps.images', # App where tasks are defined
+    'queues': {
+        'apps.images': {
+            'huey_class': 'huey.SqliteHuey' if DEBUG else 'huey.SqliteHuey', # We can use SqliteHuey or the database one
+            'name': 'aishooter_tasks',
+            'results': True,
+            'store_none': False,
+            'immediate': False,
+            'consumer': {
+                'workers': 2,
+                'worker_type': 'thread',
+            },
+        }
+    }
+}
+# Note: For production with Postgres, we should ideally use Djangohuey with the database
+# but huey's SqliteHuey is actually very reliable for small tasks too.
+# Let's use the DB-backed huey for proper production support.
+from huey import SqliteHuey
+HUEY = SqliteHuey(filename=os.path.join(BASE_DIR, 'db.huey'))

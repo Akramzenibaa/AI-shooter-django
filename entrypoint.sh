@@ -13,6 +13,10 @@ python manage.py createsuperuser --noinput || true # Create admin if env vars ar
 echo "Collect static files..."
 python manage.py collectstatic --noinput
 
+# Start Huey background consumer
+echo "Starting Huey consumer..."
+python manage.py run_huey &
+
 # Start server
 echo "Starting Gunicorn..."
 exec gunicorn --bind 0.0.0.0:8000 --timeout 300 --workers 2 --worker-class gthread --threads 4 config.wsgi:application
