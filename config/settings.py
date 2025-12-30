@@ -220,7 +220,7 @@ CLOUDINARY_STORAGE = {
 # Polar.sh Settings
 POLAR_ACCESS_TOKEN = os.getenv('POLAR_ACCESS_TOKEN', 'polar_oat_7eLqMiNnvaMblWwixLDOf9ybmEQHX0haR4aOr0XkMf3')
 POLAR_WEBHOOK_SECRET = os.getenv('POLAR_WEBHOOK_SECRET', 'polar_whs_XxkXxN90ei8YlW5qGu7oI1KDeEwQFjQVJqrcV3rW3RZ')
-POLAR_ENVIRONMENT = os.getenv('POLAR_ENVIRONMENT', 'production') # 'production' or 'sandbox'
+POLAR_ENVIRONMENT = os.getenv('POLAR_ENVIRONMENT', 'sandbox') # 'production' or 'sandbox'
 # Mapping Polar product IDs to plans/credits
 POLAR_PRODUCT_MAP = {
     # Subscriptions
