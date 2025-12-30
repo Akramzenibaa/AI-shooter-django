@@ -9,6 +9,18 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             return False
         return super().is_email_verification_required(request, email)
 
+    def get_login_redirect_url(self, request):
+        """
+        Redirect to profile if phone number is missing, otherwise use default.
+        """
+        user = request.user
+        if hasattr(user, 'userprofile') and not user.userprofile.phone_number:
+            from django.contrib import messages
+            messages.info(request, "Please provide your phone number to complete your registration.")
+            from django.urls import reverse
+            return reverse('accounts:profile')
+        return super().get_login_redirect_url(request)
+
     def send_mail(self, template_prefix, email, context):
         if "/google/" in self.request.path or "/social/" in self.request.path:
             return
