@@ -408,7 +408,11 @@
 
         // Elements to observe
         const animElements = document.querySelectorAll('.animate-on-scroll, .reveal-up, .stagger-container');
-        animElements.forEach(el => observer.observe(el));
+        if (!('IntersectionObserver' in window)) {
+            animElements.forEach(el => el.classList.add('visible'));
+        } else {
+            animElements.forEach(el => observer.observe(el));
+        }
 
         // Pricing Toggle Logic
         const toggleBtns = document.querySelectorAll('.toggle-btn');
