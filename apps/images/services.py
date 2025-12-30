@@ -14,7 +14,7 @@ import cloudinary
 import cloudinary.uploader
 
 # Configure Cloudinary
-if hasattr(settings, 'CLOUDINARY_STORAGE'):
+if hasattr(settings, 'CLOUDINARY_STORAGE') and settings.CLOUDINARY_STORAGE:
     c_config = settings.CLOUDINARY_STORAGE
     if c_config.get('CLOUD_NAME'):
         cloudinary.config(
@@ -167,27 +167,23 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                     # 1. Upload to Cloudinary (Primary)
                     cloudinary_url = None
                     try:
-                        # Prepare transformations based on plan
-                        transformation = []
-                        if plan == 'agency':
-                            transformation = [{'width': 4096, 'crop': "scale"}]
-                        elif plan in ['growth', 'starter']:
-                            transformation = [{'width': 2048, 'crop': "scale"}]
+                        # Re-verify and log config (Masked)
+                        c_name = os.getenv('CLOUDINARY_CLOUD_NAME')
+                        if not c_name:
+                             c_name = settings.CLOUDINARY_STORAGE.get('CLOUD_NAME')
                         
-                        logger.info(f"Uploading Image {i+1} to Cloudinary...")
+                        logger.info(f"Targeting Cloudinary Cloud: {c_name}")
                         
-                        # Use bytes directly for the upload
+                        import cloudinary.uploader
                         upload_res = cloudinary.uploader.upload(
-                            final_img_bytes,
+                            BytesIO(final_img_bytes),
                             folder="generated_campaigns",
-                            resource_type="image",
-                            transformation=transformation
+                            resource_type="image"
                         )
                         cloudinary_url = upload_res.get('secure_url')
-                        logger.info(f"Cloudinary Upload Success: {cloudinary_url}")
-                        logger.debug(f"Cloudinary Response: {upload_res}")
+                        logger.info(f"YAY! Cloudinary Success: {cloudinary_url}")
                     except Exception as e:
-                        logger.error(f"Cloudinary upload failed: {str(e)}")
+                        logger.error(f"CLOUDINARY UPLOAD FAILED: {str(e)}")
                         import traceback
                         logger.error(traceback.format_exc())
 
