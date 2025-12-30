@@ -19,7 +19,7 @@ def dashboard(request):
                 img.thumbnail_url = img.image_url.replace('/upload/', '/upload/w_600,c_scale,q_auto,f_auto/')
                 # Generate high-res URL based on plan
                 res_limit = "w_4096" if plan == 'agency' else "w_2048"
-                img.high_res_url = img.image_url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best,f_png/')
+                img.high_res_url = img.image_url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best/')
                 logger.info(f"Dashboard: Generated high-res URL with {res_limit} for image {img.id}")
             else:
                 img.thumbnail_url = img.image_url
