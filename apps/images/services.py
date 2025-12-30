@@ -164,23 +164,42 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                 if final_img_bytes:
                     filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
                     
-                    # --- SAFEGUARD: Resize if over Cloudinary 25MP limit ---
+                    # --- SAFEGUARD: Resize if over Cloudinary Limits (25MP or 10MB) ---
                     try:
                         with Image.open(BytesIO(final_img_bytes)) as check_img:
                             width, height = check_img.size
                             mp = (width * height) / 1000000
-                            if mp > 24.5:
-                                logger.warning(f"Image is {mp:.2f}MP (Over 25MP limit). Resizing down...")
-                                # Scale down while keeping aspect ratio
-                                scale = (24.0 / mp) ** 0.5
-                                new_size = (int(width * scale), int(height * scale))
-                                check_img = check_img.resize(new_size, Image.Resampling.LANCZOS)
+                            mb = len(final_img_bytes) / (1024 * 1024)
+                            
+                            if mp > 24.5 or mb > 10.0:
+                                logger.warning(f"Image ({mp:.2f}MP, {mb:.2f}MB) exceeds Cloudinary limits. Optimizing...")
                                 
-                                # Export back to bytes
-                                temp_buffer = BytesIO()
-                                check_img.save(temp_buffer, format="PNG")
-                                final_img_bytes = temp_buffer.getvalue()
-                                logger.info(f"Resized to {new_size[0]}x{new_size[1]} ({ (new_size[0]*new_size[1])/1000000 :.2f}MP)")
+                                # Strategy: Progressively resize/optimize until it fits under 10MB and 25MP
+                                current_img = check_img
+                                attempts = 0
+                                while (mp > 24.5 or mb > 9.9) and attempts < 5:
+                                    attempts += 1
+                                    # Scale down: slightly more if it's way over, or 10% if it's close
+                                    scale = 0.9
+                                    if mp > 25.0:
+                                        scale = (24.0 / mp) ** 0.5
+                                    elif mb > 15.0: # Very large file
+                                        scale = 0.7
+                                    
+                                    new_size = (int(current_img.size[0] * scale), int(current_img.size[1] * scale))
+                                    current_img = current_img.resize(new_size, Image.Resampling.LANCZOS)
+                                    
+                                    # Save with optimization
+                                    temp_buffer = BytesIO()
+                                    current_img.save(temp_buffer, format="PNG", optimize=True)
+                                    final_img_bytes = temp_buffer.getvalue()
+                                    
+                                    # Update stats for next loop check
+                                    mp = (new_size[0] * new_size[1]) / 1000000
+                                    mb = len(final_img_bytes) / (1024 * 1024)
+                                    logger.info(f"Attempt {attempts}: New stats {mp:.2f}MP, {mb:.2f}MB")
+
+                                logger.info(f"Final safe stats: {mp:.2f}MP, {mb:.2f}MB")
                     except Exception as resize_err:
                         logger.error(f"Resize safeguard failed: {resize_err}")
 
