@@ -104,6 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // resultsCard is no longer hidden here, keeping previous results visible
 
 
+        // Show results card with skeletons immediately
+        resultsCard.style.display = 'block';
+        resultsGallery.innerHTML = '';
+        for (let i = 0; i < imgCount; i++) {
+            const skeleton = document.createElement('div');
+            skeleton.className = 'thumb-wrap skeleton';
+            skeleton.style.aspectRatio = '1 / 1.5';
+            resultsGallery.appendChild(skeleton);
+        }
+
         const userPrompt = document.getElementById('user-prompt').value;
         const formData = new FormData();
         formData.append('image', selectedFile);
@@ -143,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             generateBtn.disabled = false;
             generateBtn.textContent = 'Generate';
             generatingCard.style.display = 'none';
+            resultsGallery.innerHTML = ''; // Clear skeletons on error
         }
     });
 
@@ -163,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultsCard.style.display = 'block';
 
                     // Render Gallery
+                    resultsGallery.innerHTML = '';
                     data.urls.forEach(url => {
                         const wrap = document.createElement('div');
                         wrap.className = 'thumb-wrap';

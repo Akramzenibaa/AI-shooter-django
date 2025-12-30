@@ -22,7 +22,7 @@
     <nav class="nav-container" id="navbar">
         <div class="nav-content">
             <div class="logo">
-                <img src="{% static 'assets/logo.png' %}" alt="Logo" width="32" height="32">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo" width="32" height="32" fetchpriority="high">
                 <span>AI Shooter</span>
             </div>
             <div class="nav-links">
@@ -88,9 +88,9 @@
             <div class="showcase-container">
                 <div class="comparison-container" id="comparison-slider">
                     <img src="{% static 'assets/after.jpg' %}" alt="After" class="comparison-image after"
-                        draggable="false">
+                        draggable="false" width="1200" height="800" loading="lazy">
                     <img src="{% static 'assets/before.jpg' %}" alt="Before" class="comparison-image before"
-                        draggable="false" id="before-img">
+                        draggable="false" id="before-img" width="1200" height="800" loading="lazy">
 
                     <div class="slider-handle" id="slider-handle">
                         <div class="slider-line"></div>
