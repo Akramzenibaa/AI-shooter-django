@@ -103,7 +103,7 @@ DATABASES = {
 
 # Advanced Connection Pooling (Postgres only)
 if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
-    DATABASES['default']['ENGINE'] = 'django_db_connection_pool.backends.postgresql'
+    DATABASES['default']['ENGINE'] = 'dj_db_conn_pool.backends.postgresql'
     DATABASES['default']['POOL_OPTIONS'] = {
         'POOL_SIZE': 10,
         'MAX_OVERFLOW': 10,
