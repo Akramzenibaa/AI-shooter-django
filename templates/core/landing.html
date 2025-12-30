@@ -25,7 +25,7 @@
                 <img src="{% static 'assets/logo.png' %}" alt="Logo" width="32" height="32" fetchpriority="high">
                 <span>AI Shooter</span>
             </div>
-            <div class="nav-links">
+            <div class="nav-links desktop-only">
                 {% if user.is_authenticated %}
                 <a href="{% url 'core:dashboard' %}" class="nav-btn no-decoration">
                     Launch App
@@ -44,8 +44,48 @@
                 <a href="{% url 'account_signup' %}?next={{ request.path }}" class="nav-btn no-decoration">Register</a>
                 {% endif %}
             </div>
+
+            <button class="hamburger-btn mobile-only" id="hamburger-menu" aria-label="Menu">
+                <i data-lucide="menu"></i>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-header">
+            <div class="logo">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo">
+                <span>AI Shooter</span>
+            </div>
+            <button class="close-drawer" id="close-drawer">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-links">
+                <a href="{% url 'core:landing' %}" class="drawer-link">
+                    <i data-lucide="home"></i> Home
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:dashboard' %}" class="drawer-link">
+                    <i data-lucide="layout-dashboard"></i> Launch App
+                </a>
+                <form action="{% url 'account_logout' %}" method="post" class="drawer-logout-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="drawer-link logout-btn">
+                        <i data-lucide="log-out"></i> Sign Out
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'account_login' %}?next={{ request.path }}" class="drawer-link">Login</a>
+                <a href="{% url 'account_signup' %}?next={{ request.path }}" class="drawer-link highlight">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
     <main>
         <!-- Hero Section -->
@@ -381,7 +421,6 @@
             }, 300);
         }
 
-        // Initialize Lucide icons safely
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         } else {
@@ -390,6 +429,23 @@
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             });
         }
+
+        // Mobile Drawer Logic
+        const hamburgerBtn = document.getElementById('hamburger-menu');
+        const closeDrawerBtn = document.getElementById('close-drawer');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+
+        function toggleDrawer() {
+            if (!mobileDrawer || !drawerOverlay) return;
+            mobileDrawer.classList.toggle('active');
+            drawerOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileDrawer.classList.contains('active') ? 'hidden' : '';
+        }
+
+        if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleDrawer);
+        if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', toggleDrawer);
+        if (drawerOverlay) drawerOverlay.addEventListener('click', toggleDrawer);
 
         // Intersection Observer for animations
         const observerOptions = {

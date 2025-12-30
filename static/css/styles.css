@@ -962,3 +962,202 @@ body {
 .btn-small-padding {
     padding: 0.4rem 1rem;
 }
+
+/* Visibility Utilities */
+.desktop-only {
+    display: flex !important;
+}
+
+.mobile-only {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: flex !important;
+    }
+}
+
+/* Hamburger Button */
+.hamburger-btn {
+    background: var(--glass);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 0.6rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    align-items: center;
+    justify-content: center;
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Drawer */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 2001;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--card-border);
+}
+
+.mobile-drawer.active {
+    right: 0;
+}
+
+.drawer-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.close-drawer {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.drawer-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+}
+
+.drawer-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.drawer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+}
+
+.drawer-user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-username {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.drawer-stats {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.drawer-stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    color: #a5b4fc;
+    font-weight: 700;
+}
+
+.getmore-drawer {
+    display: block;
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    color: var(--text-main);
+    text-decoration: none;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.drawer-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.drawer-link.highlight {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+}
+
+.logout-btn {
+    color: #ef4444;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.drawer-logout-form {
+    width: 100%;
+}

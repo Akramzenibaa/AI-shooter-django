@@ -13,32 +13,18 @@
             <div class="topbar-actions" id="auth-section">
                 {% if not user.is_authenticated %}
                 <div id="google-btn"></div>
-                <div class="flex-gap-small">
+                <div class="flex-gap-small desktop-only">
                     <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn small secondary">Login</a>
                     <a href="{% url 'account_signup' %}?next={{ request.path }}" class="btn small">Register</a>
                 </div>
                 {% else %}
-                <div class="credits">
+                <div class="credits desktop-only">
                     <span class="credit-count"><span id="credit-value">{{ user.userprofile.credits|default:0 }}</span>
                         <span class="desktop-only">Credits</span></span>
                     <span class="plan-badge-ui">{{ user.userprofile.get_plan_type_display }}</span>
                     <a href="{% url 'core:pricing' %}" class="getmore no-decoration" id="getmore-btn">✨ Get More</a>
-                    <div class="getmore-panel hidden" id="getmore-panel">
-                        <div class="getmore-title">Contact us to get more credits</div>
-                        <div class="getmore-icons">
-                            <a class="icon-link tiktok" href="https://www.tiktok.com/@ai_shooter_bot" target="_blank"
-                                rel="noopener noreferrer">
-                                <img src="https://www.tiktok.com/favicon.ico" alt="TikTok" class="icon-social-size">
-                            </a>
-                            <a class="icon-link whatsapp" href="https://wa.me/+21656358478" target="_blank"
-                                rel="noopener noreferrer">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                                    alt="WhatsApp">
-                            </a>
-                        </div>
-                    </div>
                 </div>
-                <div class="user">
+                <div class="user desktop-only">
                     <img src="{{ user.socialaccount_set.all.0.get_avatar_url|default:'https://www.gravatar.com/avatar/' }}"
                         alt="{{ user.email }}">
                     <span class="desktop-only">{{ user.first_name|default:user.email }}</span>
@@ -50,9 +36,63 @@
                     </form>
                 </div>
                 {% endif %}
+
+                <button class="hamburger-btn mobile-only" id="hamburger-menu" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-header">
+            <div class="logo">
+                <img src="{% static 'assets/logo.png' %}" alt="Logo">
+                <span>AI Shooter</span>
+            </div>
+            <button class="close-drawer" id="close-drawer">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="drawer-content">
+            {% if user.is_authenticated %}
+            <div class="drawer-user-info">
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url|default:'https://www.gravatar.com/avatar/' }}"
+                    alt="{{ user.email }}" class="drawer-avatar">
+                <div class="drawer-user-details">
+                    <span class="drawer-username">{{ user.first_name|default:user.email }}</span>
+                    <span class="plan-badge-ui">{{ user.userprofile.get_plan_type_display }}</span>
+                </div>
+            </div>
+            <div class="drawer-stats">
+                <div class="drawer-stat-item">
+                    <span class="stat-label">Credits</span>
+                    <span class="stat-value">{{ user.userprofile.credits|default:0 }}</span>
+                </div>
+                <a href="{% url 'core:pricing' %}" class="getmore-drawer no-decoration">✨ Get More Credits</a>
+            </div>
+            <div class="drawer-links">
+                <a href="{% url 'core:landing' %}" class="drawer-link">
+                    <i data-lucide="home"></i> Home
+                </a>
+                <form action="{% url 'account_logout' %}" method="post" class="drawer-logout-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="drawer-link logout-btn">
+                        <i data-lucide="log-out"></i> Sign Out
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="drawer-links">
+                <a href="{% url 'account_login' %}?next={{ request.path }}" class="drawer-link">Login</a>
+                <a href="{% url 'account_signup' %}?next={{ request.path }}" class="drawer-link highlight">Register</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
     <main class="content">
         <div class="main-area">
@@ -165,6 +205,22 @@
 
     // Initialize Lucide icons
     lucide.createIcons();
+
+    // Mobile Drawer Logic
+    const hamburgerBtn = document.getElementById('hamburger-menu');
+    const closeDrawerBtn = document.getElementById('close-drawer');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+
+    function toggleDrawer() {
+        mobileDrawer.classList.toggle('active');
+        drawerOverlay.classList.toggle('active');
+        document.body.style.overflow = mobileDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleDrawer);
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', toggleDrawer);
+    if (drawerOverlay) drawerOverlay.addEventListener('click', toggleDrawer);
 </script>
 <script src="{% static 'js/dashboard.js' %}?v=1.1"></script>
 {% endblock %}
