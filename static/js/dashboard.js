@@ -176,10 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Render Gallery
                     resultsGallery.innerHTML = '';
                     data.urls.forEach(url => {
+                        const thumbUrl = url.includes('cloudinary.com') ? url.replace('/upload/', '/upload/w_600,c_scale,q_auto,f_auto/') : url;
                         const wrap = document.createElement('div');
                         wrap.className = 'thumb-wrap';
                         wrap.innerHTML = `
-                            <img src="${url}" alt="Generated image" loading="lazy">
+                            <img src="${thumbUrl}" alt="Generated image" loading="lazy">
                             <a href="${url}" download class="dl-icon" title="Download">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                     <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-2.25a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H4.5a3 3 0 01-3-3v-2.25a.75.75 0 01.75-.75z" clipRule="evenodd" />
@@ -231,9 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImg = document.getElementById('modal-img');
 
     document.addEventListener('click', async (e) => {
-        // Modal Zoom
-        if (e.target.tagName === 'IMG' && (e.target.closest('.gallery') || e.target.closest('.history-grid'))) {
-            modalImg.src = e.target.src;
+        // Modal Zoom (Load High-Res)
+        if (e.target.tagName === 'IMG' && (e.target.closest('.gallery') || e.target.closest('.history-grid') || e.target.closest('.thumb-wrap') || e.target.closest('.history-item'))) {
+            const highResLink = e.target.parentElement.querySelector('a.dl-icon');
+            if (highResLink) {
+                modalImg.src = highResLink.href;
+            } else {
+                modalImg.src = e.target.src;
+            }
             modal.style.display = 'flex';
             return;
         }
