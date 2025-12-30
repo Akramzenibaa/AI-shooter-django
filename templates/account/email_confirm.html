@@ -81,7 +81,7 @@
                 class="link-styled">{{ email }}</a> is your e-mail address.{% endblocktrans %}
         </p>
 
-        <form method="post" action="">
+        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
             {% csrf_token %}
             <button class="submit-btn" type="submit">{% trans "Confirm" %}</button>
         </form>
