@@ -100,7 +100,21 @@
                 <h1>AI Photo Shooter</h1>
                 <p>Upload an image of your product and get enhanced photos</p>
                 {% if not user.is_authenticated %}
-                <p2 id="login-msg">Make sure you are logged in first</p2>
+                <div class="login-warning">
+                    <i data-lucide="info"></i>
+                    <span>Please log in to start creating magic</span>
+                </div>
+                {% else %}
+                <div class="user-status-dashboard">
+                    <div class="status-badge credits-badge">
+                        <i data-lucide="zap"></i>
+                        <span>{{ user.userprofile.credits|default:0 }} Credits</span>
+                    </div>
+                    <div class="status-badge plan-badge">
+                        <i data-lucide="shield-check"></i>
+                        <span>{{ user.userprofile.get_plan_type_display }} Plan</span>
+                    </div>
+                </div>
                 {% endif %}
             </section>
 
@@ -204,7 +218,11 @@
     });
 
     // Initialize Lucide icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    } else {
+        window.addEventListener('load', () => lucide.createIcons());
+    }
 
     // Mobile Drawer Logic
     const hamburgerBtn = document.getElementById('hamburger-menu');
