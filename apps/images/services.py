@@ -23,15 +23,21 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     Optimized for Free Tier with model splitting and throttling.
     Modes: 'creative', 'model', 'background'
     """
-    # 0. Dynamic Configuration Check
+    # 0. Dynamic Configuration Check & Sanitization
     c_config = settings.CLOUDINARY_STORAGE
-    if not c_config.get('CLOUD_NAME') or not c_config.get('API_KEY'):
-        logger.error("CRITICAL: Cloudinary credentials missing from settings!")
-    
+    cloud_name = str(c_config.get('CLOUD_NAME', '')).strip()
+    api_key = str(c_config.get('API_KEY', '')).strip()
+    api_secret = str(c_config.get('API_SECRET', '')).strip()
+
+    if not cloud_name or not api_key:
+        logger.error("CRITICAL: Cloudinary credentials missing or empty in settings!")
+    else:
+        logger.info(f"Connecting to Cloudinary: {cloud_name}")
+
     cloudinary.config(
-        cloud_name=c_config.get('CLOUD_NAME'),
-        api_key=c_config.get('API_KEY'),
-        api_secret=c_config.get('API_SECRET'),
+        cloud_name=cloud_name,
+        api_key=api_key,
+        api_secret=api_secret,
         secure=True
     )
 
