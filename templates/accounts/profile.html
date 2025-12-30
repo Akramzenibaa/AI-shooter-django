@@ -154,8 +154,13 @@
 
         <div
             style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); text-align: center;">
+            {% if user.has_usable_password %}
             <a href="{% url 'account_change_password' %}"
                 style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Change Password</a>
+            {% else %}
+            <a href="{% url 'account_set_password' %}"
+                style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Set Account Password</a>
+            {% endif %}
         </div>
     </div>
 </div>
