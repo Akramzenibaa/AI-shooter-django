@@ -11,16 +11,22 @@ class PhoneMandatoryMiddleware:
             allowed_paths = [
                 reverse('accounts:profile'),
                 reverse('account_logout'),
-                '/admin/',  # Allow admin access
-                '/static/',  # Allow static files
-                '/media/',   # Allow media files
+                reverse('core:landing'),
+                '/admin/',
+                '/static/',
+                '/media/',
             ]
             
             # Check if user has a profile and is missing a phone number
             if hasattr(request.user, 'userprofile') and not request.user.userprofile.phone_number:
-                # If they are not on an allowed path, redirect them to the profile page
                 current_path = request.path
-                is_allowed = any(current_path.startswith(path) for path in allowed_paths)
+                
+                # If they are not on an allowed path, redirect them to the profile page
+                # Special cases for logout and landing which might be prefixes of other things
+                if current_path == reverse('core:landing') or current_path == reverse('account_logout'):
+                    is_allowed = True
+                else:
+                    is_allowed = any(current_path.startswith(path) for path in allowed_paths)
                 
                 if not is_allowed:
                     return redirect('accounts:profile')
