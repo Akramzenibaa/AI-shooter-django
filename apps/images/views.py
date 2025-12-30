@@ -69,9 +69,22 @@ def task_status(request, task_id):
             'message': result.get('message', 'Unknown error in background task')
         })
         
+    # Prepare high-res versions for the frontend
+    urls = result.get('urls', [])
+    plan = request.user.userprofile.plan_type
+    res_limit = "w_4096" if plan == 'agency' else "w_2048"
+    
+    high_res_urls = []
+    for url in urls:
+        if 'cloudinary.com' in url and '/upload/' in url:
+            high_res_urls.append(url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best/'))
+        else:
+            high_res_urls.append(url)
+
     return JsonResponse({
         'status': 'success',
-        'urls': result.get('urls', [])
+        'urls': urls,
+        'high_res_urls': high_res_urls
     })
 
 

@@ -159,31 +159,37 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                 
                 if final_img_bytes:
                     filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
-                    
-                    # --- SAFEGUARD: Resize if over Cloudinary Limits (25MP or 10.4MB) ---
-                    # 1. Upload to Cloudinary (Primary)
                     cloudinary_url = None
+                    
+                    # --- SAFEGUARD: Local Check and Resize before Cloudinary ---
                     try:
+                        with Image.open(BytesIO(final_img_bytes)) as img:
+                            width, height = img.size
+                            mp = (width * height) / 1000000
+                            mb = len(final_img_bytes) / (1024 * 1024)
+                            
+                            if mp > 24.8 or mb > 9.8:
+                                logger.info(f"Safeguard: Local resize needed before upload ({mp:.1f}MP, {mb:.1f}MB)")
+                                scale = min(1.0, (24.0 / mp)**0.5 if mp > 24.0 else 0.9)
+                                new_size = (int(width * scale), int(height * scale))
+                                optimized_img = img.resize(new_size, Image.Resampling.LANCZOS)
+                                
+                                temp_buffer = BytesIO()
+                                optimized_img.save(temp_buffer, format="PNG", optimize=True)
+                                final_img_bytes = temp_buffer.getvalue()
+                                logger.info(f"Safeguard complete: {len(final_img_bytes)} bytes")
+
                         c_name = os.getenv('CLOUDINARY_CLOUD_NAME') or settings.CLOUDINARY_STORAGE.get('CLOUD_NAME')
                         logger.info(f"Offloading upload to Cloudinary Cloud: {c_name} ({len(final_img_bytes)} bytes)")
                         
                         import cloudinary.uploader
                         
-                        # Prepare transformations based on plan (4K for Agency - Handle by Cloudinary)
-                        transformation = []
-                        if plan == 'agency':
-                            transformation = [{'width': 4096, 'crop': "scale"}]
-                        elif plan in ['growth', 'starter']:
-                            transformation = [{'width': 2048, 'crop': "scale"}]
-
                         try:
                             # ATTEMPT 1: Try direct upload without any local processing
                             upload_res = cloudinary.uploader.upload(
                                 BytesIO(final_img_bytes),
                                 folder="generated_campaigns",
-                                resource_type="image",
-                                format='png',
-                                transformation=transformation
+                                resource_type="image"
                             )
                             cloudinary_url = upload_res.get('secure_url')
                         except Exception as upload_err:
@@ -219,9 +225,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                                     upload_res = cloudinary.uploader.upload(
                                         BytesIO(final_img_bytes),
                                         folder="generated_campaigns",
-                                        resource_type="image",
-                                        format='png',
-                                        transformation=transformation
+                                        resource_type="image"
                                     )
                                     cloudinary_url = upload_res.get('secure_url')
                             else:

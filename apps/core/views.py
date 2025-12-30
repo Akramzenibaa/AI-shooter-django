@@ -8,12 +8,17 @@ def dashboard(request):
     history = []
     if request.user.is_authenticated:
         history = GeneratedImage.objects.filter(user=request.user)[:20]
-        # Optimize URLs for dashboard thumbnails to prevent scroll lag
+        # Optimize URLs for dashboard thumbnails and high-res viewing
+        plan = request.user.userprofile.plan_type
         for img in history:
             if 'cloudinary.com' in img.image_url and '/upload/' in img.image_url:
-                img.thumbnail_url = img.image_url.replace('/upload/', '/upload/w_400,c_scale,q_auto,f_auto/')
+                img.thumbnail_url = img.image_url.replace('/upload/', '/upload/w_600,c_scale,q_auto,f_auto/')
+                # Generate high-res URL based on plan
+                res_limit = "w_4096" if plan == 'agency' else "w_2048"
+                img.high_res_url = img.image_url.replace('/upload/', f'/upload/{res_limit},c_scale,q_auto:best/')
             else:
                 img.thumbnail_url = img.image_url
+                img.high_res_url = img.image_url
     return render(request, 'core/dashboard.html', {'history': history})
 
 def about(request):
