@@ -172,6 +172,8 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                                 {'effect': "upscale"},
                                 {'width': 2048, 'crop': "scale"}
                             ]
+                        
+                        logger.info(f"Applying Cloudinary Transformation for Plan {plan}: {transformation}")
 
                         # Use BytesIO for upload
                         upload_stream = BytesIO(final_img_bytes)
