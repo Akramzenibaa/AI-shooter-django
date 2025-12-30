@@ -7,8 +7,19 @@ import logging
 import traceback
 from polar_sdk import Polar
 
+@login_required
 def profile(request):
-    return render(request, 'accounts/profile.html')
+    user_profile = request.user.userprofile
+    if request.method == 'POST':
+        phone = request.POST.get('phone_number')
+        user_profile.phone_number = phone
+        user_profile.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect('accounts:profile')
+    
+    return render(request, 'accounts/profile.html', {
+        'user_profile': user_profile
+    })
 
 @login_required
 def create_checkout(request, product_id):

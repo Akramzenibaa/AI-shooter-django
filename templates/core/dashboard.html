@@ -28,6 +28,8 @@
                     <img src="{{ user.socialaccount_set.all.0.get_avatar_url|default:'https://www.gravatar.com/avatar/' }}"
                         alt="{{ user.email }}">
                     <span class="desktop-only">{{ user.first_name|default:user.email }}</span>
+                    <a href="{% url 'accounts:profile' %}" class="btn small secondary btn-small-padding"
+                        style="margin-right: 0.5rem; text-decoration: none;">Profile</a>
                     <form action="{% url 'account_logout' %}" method="post" class="form-inline">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.path }}">
@@ -79,6 +81,9 @@
                 </a>
                 <a href="{% url 'core:dashboard' %}" class="drawer-link">
                     <i data-lucide="layout-dashboard"></i> Launch App
+                </a>
+                <a href="{% url 'accounts:profile' %}" class="drawer-link">
+                    <i data-lucide="user"></i> Profile
                 </a>
                 <a href="{% url 'core:landing' %}" class="drawer-link">
                     <i data-lucide="home"></i> Home

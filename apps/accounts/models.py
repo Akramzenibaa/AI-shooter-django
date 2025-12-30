@@ -14,6 +14,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     credits = models.IntegerField(default=3) # Default free trial
     plan_type = models.CharField(max_length=20, choices=PLAN_CHOICES, default='free')
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     
     def __str__(self):
         return self.user.email
