@@ -170,6 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     urls.forEach((url, index) => {
                         const highResUrl = highResUrls[index] || url;
                         const thumbUrl = url.includes('cloudinary.com') ? url.replace('/upload/', '/upload/w_600,c_scale,q_auto,f_auto/') : url;
+
+                        console.log(`Image ${index + 1}:`, {
+                            original: url,
+                            thumbnail: thumbUrl,
+                            highRes: highResUrl
+                        });
+
                         const wrap = document.createElement('div');
                         wrap.className = 'thumb-wrap';
                         wrap.innerHTML = `
@@ -225,14 +232,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImg = document.getElementById('modal-img');
 
     document.addEventListener('click', async (e) => {
-        // Modal Zoom (Load High-Res)
         if (e.target.tagName === 'IMG' && (e.target.closest('.gallery') || e.target.closest('.history-grid') || e.target.closest('.thumb-wrap') || e.target.closest('.history-item'))) {
-            const highResLink = e.target.parentElement.querySelector('a.dl-icon');
-            if (highResLink) {
-                modalImg.src = highResLink.href;
+            // Try to find the high-res download link
+            const container = e.target.closest('.thumb-wrap') || e.target.closest('.history-item');
+            const highResLink = container ? container.querySelector('a.dl-icon') : null;
+
+            let imageUrl;
+            if (highResLink && highResLink.href) {
+                imageUrl = highResLink.href;
+                console.log('Modal: Using high-res URL from download link:', imageUrl);
             } else {
-                modalImg.src = e.target.src;
+                imageUrl = e.target.src;
+                console.log('Modal: Using thumbnail URL (no download link found):', imageUrl);
             }
+
+            modalImg.src = imageUrl;
             modal.style.display = 'flex';
             return;
         }
