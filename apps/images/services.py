@@ -14,11 +14,11 @@ import cloudinary
 import cloudinary.uploader
 
 # Configure Cloudinary
-def configure_cloudinary():
+if hasattr(settings, 'CLOUDINARY_STORAGE'):
     cloudinary.config(
-        cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'],
-        api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
-        api_secret=settings.CLOUDINARY_STORAGE['API_SECRET'],
+        cloud_name=settings.CLOUDINARY_STORAGE.get('CLOUD_NAME'),
+        api_key=settings.CLOUDINARY_STORAGE.get('API_KEY'),
+        api_secret=settings.CLOUDINARY_STORAGE.get('API_SECRET'),
         secure=True
     )
 
@@ -30,7 +30,6 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     Optimized for Free Tier with model splitting and throttling.
     Modes: 'creative', 'model', 'background'
     """
-    configure_cloudinary()
     client = genai.Client(api_key=settings.GOOGLE_API_KEY)
     
     # Load image
@@ -173,15 +172,14 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                                 {'width': 2048, 'crop': "scale"}
                             ]
                         
-                        logger.info(f"Applying Cloudinary Transformation for Plan {plan}: {transformation}")
+                        logger.info(f"Uploading to Cloudinary [Plan: {plan}]...")
 
                         # Use BytesIO for upload
                         upload_stream = BytesIO(final_img_bytes)
                         upload_res = cloudinary.uploader.upload(
                             upload_stream,
                             folder="generated_campaigns",
-                            public_id=filename.replace('.png', ''),
-                            format="png",
+                            public_id=filename.replace('.png', '').replace('.jpg', ''),
                             transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
