@@ -47,7 +47,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
         
         # Convert PIL to bytes for the new SDK
         buffered = BytesIO()
-        product_img.save(buffered, format="JPEG")
+        product_img.save(buffered, format="PNG")
         img_bytes = buffered.getvalue()
 
         # IMPORTANT: Seek back to 0 so other parts of the app can read the file
@@ -77,7 +77,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             model='gemini-3-pro-image-preview',
             contents=[
                 director_prompt,
-                types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
+                types.Part.from_bytes(data=img_bytes, mime_type='image/png')
             ]
         )
         
@@ -105,8 +105,8 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
             model='gemini-3-pro-preview',
             contents=[
                 engineer_prompt,
-                types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),   # [Image 1: Product]
-                types.Part.from_bytes(data=model_img_bytes, mime_type='image/jpeg') # [Image 2: Context/Vibe]
+                types.Part.from_bytes(data=img_bytes, mime_type='image/png'),   # [Image 1: Product]
+                types.Part.from_bytes(data=model_img_bytes, mime_type='image/png') # [Image 2: Context/Vibe]
             ]
         )
         
@@ -149,8 +149,8 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                     model='gemini-3-pro-image-preview',
                     contents=[
                         artist_instruction,
-                        types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg'),       # Input Image 1
-                        types.Part.from_bytes(data=model_img_bytes, mime_type='image/jpeg') # Input Image 2 (Context)
+                        types.Part.from_bytes(data=img_bytes, mime_type='image/png'),       # Input Image 1
+                        types.Part.from_bytes(data=model_img_bytes, mime_type='image/png') # Input Image 2 (Context)
                     ]
                 )
                 
