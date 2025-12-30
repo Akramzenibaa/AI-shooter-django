@@ -163,29 +163,32 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         # Prepare transformations based on plan
                         transformation = []
                         if plan == 'agency':
-                            # High-end resolution scaling (4K Ultra)
                             transformation = [
                                 {'effect': "upscale"},
-                                {'width': 4096, 'crop': "scale"} # Force 4K
+                                {'width': 4096, 'crop': "scale"}
                             ]
                         elif plan in ['growth', 'starter']:
-                            # Professional resolution scaling (2K High)
                             transformation = [
                                 {'effect': "upscale"},
-                                {'width': 2048, 'crop': "scale"} # Force 2K
+                                {'width': 2048, 'crop': "scale"}
                             ]
 
+                        # Use BytesIO for upload
+                        upload_stream = BytesIO(final_img_bytes)
                         upload_res = cloudinary.uploader.upload(
-                            final_img_bytes,
+                            upload_stream,
                             folder="generated_campaigns",
                             public_id=filename.replace('.png', ''),
                             format="png",
                             transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
-                        logger.info(f"Success! Final Image {i+1} uploaded to Cloudinary (Plan: {plan}).")
+                        logger.info(f"Cloudinary Upload Success: {cloudinary_url}")
+                        logger.debug(f"Cloudinary Response: {upload_res}")
                     except Exception as e:
                         logger.error(f"Cloudinary upload failed: {str(e)}")
+                        import traceback
+                        logger.error(traceback.format_exc())
 
                     
                     # 2. URL resolution and Fallback Storage
