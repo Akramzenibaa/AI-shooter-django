@@ -25,28 +25,11 @@
 }
 
 .skeleton {
-    background: linear-gradient(90deg, #13131a 25%, #232333 50%, #13131a 75%) !important;
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 2s infinite linear;
+    background: #13131a !important;
     border-radius: 1.25rem !important;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.1) !important;
-}
-
-.skeleton::after {
-    content: "Generating...";
-    position: absolute;
-    bottom: 1.25rem;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 0.7rem;
-    color: #818cf8;
-    opacity: 0.6;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
 .spinner-mini {
