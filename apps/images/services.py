@@ -182,13 +182,12 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         # Use BytesIO for upload
                         upload_stream = BytesIO(final_img_bytes)
                         
-                        logger.info(f"Uploading to Cloudinary [Plan: {plan}, Folder: generated_campaigns]...")
+                        logger.info(f"Uploading to Cloudinary [File: {filename}]...")
                         
                         upload_res = cloudinary.uploader.upload(
                             upload_stream,
                             folder="generated_campaigns",
-                            resource_type="image",
-                            transformation=transformation
+                            resource_type="image"
                         )
                         cloudinary_url = upload_res.get('secure_url')
                         logger.info(f"Cloudinary Upload Success: {cloudinary_url}")
