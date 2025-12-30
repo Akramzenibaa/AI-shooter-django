@@ -207,6 +207,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                             BytesIO(final_img_bytes),
                             folder="generated_campaigns",
                             resource_type="image",
+                            format='png',
                             transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
