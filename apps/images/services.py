@@ -34,28 +34,24 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     """
     client = genai.Client(api_key=settings.GOOGLE_API_KEY)
     
-    # Load image
+    # Load image bytes - Try to avoid Pillow for performance
     try:
-        if isinstance(image_input, Image.Image):
-            product_img = image_input
-        else:
-            # Handle string path or file-like object (InMemoryUploadedFile)
-            product_img = Image.open(image_input)
-            # Re-verify and convert to RGB if necessary (e.g. RGBA -> RGB for JPEG save)
-            if product_img.mode != 'RGB':
-                product_img = product_img.convert('RGB')
-        
-        # Convert PIL to bytes for the new SDK
-        buffered = BytesIO()
-        product_img.save(buffered, format="PNG")
-        img_bytes = buffered.getvalue()
-
-        # IMPORTANT: Seek back to 0 so other parts of the app can read the file
-        if hasattr(image_input, 'seek'):
+        if hasattr(image_input, 'read'):
             image_input.seek(0)
-
+            img_bytes = image_input.read()
+            image_input.seek(0)
+        elif isinstance(image_input, bytes):
+            img_bytes = image_input
+        else:
+            # Fallback to Pillow ONLY if necessary
+            with Image.open(image_input) as img:
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                buffered = BytesIO()
+                img.save(buffered, format="PNG")
+                img_bytes = buffered.getvalue()
     except Exception as e:
-        logger.error(f"Error loading image: {e}")
+        logger.error(f"Error loading image bytes: {e}")
         return []
 
     output_dir = os.path.join(settings.MEDIA_ROOT, 'generated_campaigns')
@@ -165,77 +161,76 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                     filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
                     
                     # --- SAFEGUARD: Resize if over Cloudinary Limits (25MP or 10.4MB) ---
-                    try:
-                        with Image.open(BytesIO(final_img_bytes)) as check_img:
-                            width, height = check_img.size
-                            mp = (width * height) / 1000000
-                            bytes_size = len(final_img_bytes)
-                            mb = bytes_size / (1024 * 1024)
-                            
-                            logger.info(f"Checking Image size before upload: {mp:.2f}MP, {mb:.2f}MB ({bytes_size} bytes)")
-                            
-                            # Cloudinary limit is exactly 10,485,760 bytes. We use 9.5 MiB as a safe buffer.
-                            if mp > 24.5 or mb > 9.5:
-                                logger.warning(f"Image exceeds safe limits ({mb:.2f}MB). Optimizing...")
-                                
-                                # Strategy: Progressively resize/optimize until it fits under 9.5MB and 25MP
-                                current_img = check_img
-                                attempts = 0
-                                while (mp > 24.5 or mb > 9.3) and attempts < 5:
-                                    attempts += 1
-                                    scale = 0.85 # More aggressive scale down (15% per step)
-                                    if mp > 25.0:
-                                        scale = (24.0 / mp) ** 0.5
-                                    
-                                    new_size = (int(current_img.size[0] * scale), int(current_img.size[1] * scale))
-                                    current_img = current_img.resize(new_size, Image.Resampling.LANCZOS)
-                                    
-                                    # Save with optimization
-                                    temp_buffer = BytesIO()
-                                    current_img.save(temp_buffer, format="PNG", optimize=True)
-                                    final_img_bytes = temp_buffer.getvalue()
-                                    
-                                    # Update stats for next loop check
-                                    mp = (new_size[0] * new_size[1]) / 1000000
-                                    mb = len(final_img_bytes) / (1024 * 1024)
-                                    logger.info(f"Attempt {attempts}: New stats {mp:.2f}MP, {mb:.2f}MB ({len(final_img_bytes)} bytes)")
-
-                                logger.info(f"Final safe stats: {mp:.2f}MP, {mb:.2f}MB")
-                    except Exception as resize_err:
-                        logger.error(f"Resize safeguard failed: {resize_err}")
-
                     # 1. Upload to Cloudinary (Primary)
                     cloudinary_url = None
                     try:
-                        # Re-verify and log config (Masked)
-                        c_name = os.getenv('CLOUDINARY_CLOUD_NAME')
-                        if not c_name:
-                             c_name = settings.CLOUDINARY_STORAGE.get('CLOUD_NAME')
-                        
-                        logger.info(f"Targeting Cloudinary Cloud: {c_name}")
+                        c_name = os.getenv('CLOUDINARY_CLOUD_NAME') or settings.CLOUDINARY_STORAGE.get('CLOUD_NAME')
+                        logger.info(f"Offloading upload to Cloudinary Cloud: {c_name} ({len(final_img_bytes)} bytes)")
                         
                         import cloudinary.uploader
                         
-                        # Prepare transformations based on plan (4K for Agency)
+                        # Prepare transformations based on plan (4K for Agency - Handle by Cloudinary)
                         transformation = []
                         if plan == 'agency':
                             transformation = [{'width': 4096, 'crop': "scale"}]
                         elif plan in ['growth', 'starter']:
                             transformation = [{'width': 2048, 'crop': "scale"}]
 
-                        upload_res = cloudinary.uploader.upload(
-                            BytesIO(final_img_bytes),
-                            folder="generated_campaigns",
-                            resource_type="image",
-                            format='png',
-                            transformation=transformation
-                        )
-                        cloudinary_url = upload_res.get('secure_url')
-                        logger.info(f"YAY! Cloudinary Success [Plan: {plan}]: {cloudinary_url}")
+                        try:
+                            # ATTEMPT 1: Try direct upload without any local processing
+                            upload_res = cloudinary.uploader.upload(
+                                BytesIO(final_img_bytes),
+                                folder="generated_campaigns",
+                                resource_type="image",
+                                format='png',
+                                transformation=transformation
+                            )
+                            cloudinary_url = upload_res.get('secure_url')
+                        except Exception as upload_err:
+                            err_msg = str(upload_err).lower()
+                            if "too large" in err_msg or "megapixel" in err_msg or "limit" in err_msg:
+                                logger.warning(f"Cloudinary rejected original file. Falling back to local optimization: {upload_err}")
+                                
+                                # FALLBACK: Pillow Optimization Only When Necessary
+                                with Image.open(BytesIO(final_img_bytes)) as img:
+                                    width, height = img.size
+                                    mp = (width * height) / 1000000
+                                    mb = len(final_img_bytes) / (1024 * 1024)
+                                    
+                                    # Optimize loop
+                                    current_img = img
+                                    attempts = 0
+                                    while (mp > 24.5 or mb > 9.3) and attempts < 3:
+                                        attempts += 1
+                                        scale = 0.85
+                                        if mp > 25.0: scale = (24.0 / mp) ** 0.5
+                                        
+                                        new_size = (int(current_img.size[0] * scale), int(current_img.size[1] * scale))
+                                        current_img = current_img.resize(new_size, Image.Resampling.LANCZOS)
+                                        
+                                        temp_buffer = BytesIO()
+                                        current_img.save(temp_buffer, format="PNG", optimize=True)
+                                        final_img_bytes = temp_buffer.getvalue()
+                                        
+                                        mp = (new_size[0] * new_size[1]) / 1000000
+                                        mb = len(final_img_bytes) / (1024 * 1024)
+                                    
+                                    # ATTEMPT 2: Try upload again after local optimization
+                                    upload_res = cloudinary.uploader.upload(
+                                        BytesIO(final_img_bytes),
+                                        folder="generated_campaigns",
+                                        resource_type="image",
+                                        format='png',
+                                        transformation=transformation
+                                    )
+                                    cloudinary_url = upload_res.get('secure_url')
+                            else:
+                                raise upload_err # Rethrow if it's not a size issue
+
+                        if cloudinary_url:
+                            logger.info(f"Cloudinary Success [Plan: {plan}]: {cloudinary_url}")
                     except Exception as e:
-                        logger.error(f"CLOUDINARY UPLOAD FAILED: {str(e)}")
-                        import traceback
-                        logger.error(traceback.format_exc())
+                        logger.error(f"CLOUDINARY ERROR: {str(e)}")
 
                     
                     # 2. URL resolution and Fallback Storage
