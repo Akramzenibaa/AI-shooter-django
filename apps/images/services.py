@@ -14,12 +14,13 @@ import cloudinary
 import cloudinary.uploader
 
 # Configure Cloudinary
-cloudinary.config(
-    cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'],
-    api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
-    api_secret=settings.CLOUDINARY_STORAGE['API_SECRET'],
-    secure=True
-)
+def configure_cloudinary():
+    cloudinary.config(
+        cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'],
+        api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
+        api_secret=settings.CLOUDINARY_STORAGE['API_SECRET'],
+        secure=True
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
     Optimized for Free Tier with model splitting and throttling.
     Modes: 'creative', 'model', 'background'
     """
+    configure_cloudinary()
     client = genai.Client(api_key=settings.GOOGLE_API_KEY)
     
     # Load image
@@ -164,12 +166,10 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         transformation = []
                         if plan == 'agency':
                             transformation = [
-                                {'effect': "upscale"},
                                 {'width': 4096, 'crop': "scale"}
                             ]
                         elif plan in ['growth', 'starter']:
                             transformation = [
-                                {'effect': "upscale"},
                                 {'width': 2048, 'crop': "scale"}
                             ]
                         
