@@ -171,29 +171,40 @@
 
 {% block extra_js %}
 <script>
-    lucide.createIcons();
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        } else {
+            window.addEventListener('load', () => {
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+        }
 
-    const toggleBtns = document.querySelectorAll('.toggle-btn');
-    const subGrid = document.getElementById('subscription-grid');
-    const packGrid = document.getElementById('credit-pack-grid');
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const subGrid = document.getElementById('subscription-grid');
+        const packGrid = document.getElementById('credit-pack-grid');
 
-    toggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            toggleBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        if (toggleBtns && subGrid && packGrid) {
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    toggleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
 
-            if (btn.dataset.type === 'subscription') {
-                subGrid.classList.remove('hidden');
-                subGrid.classList.add('visible');
-                packGrid.classList.remove('visible');
-                packGrid.classList.add('hidden');
-            } else {
-                packGrid.classList.remove('hidden');
-                packGrid.classList.add('visible');
-                subGrid.classList.remove('visible');
-                subGrid.classList.add('hidden');
-            }
-        });
+                    if (btn.dataset.type === 'subscription') {
+                        subGrid.classList.remove('hidden');
+                        subGrid.classList.add('visible');
+                        packGrid.classList.remove('visible');
+                        packGrid.classList.add('hidden');
+                    } else {
+                        packGrid.classList.remove('hidden');
+                        packGrid.classList.add('visible');
+                        subGrid.classList.remove('visible');
+                        subGrid.classList.add('hidden');
+                    }
+                });
+            });
+        }
     });
 </script>
 {% endblock %}
