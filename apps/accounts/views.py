@@ -27,9 +27,11 @@ def create_checkout(request, product_id):
         token_prefix = clean_token[:15] if clean_token else "None"
         token_len = len(raw_token) if raw_token else 0
         
+        import os
+        env_from_os = os.getenv('POLAR_ENVIRONMENT', 'not set')
         server = getattr(settings, 'POLAR_ENVIRONMENT', 'production')
         logger = logging.getLogger(__name__)
-        logger.info(f"DEBUG: Token Length: {token_len}, Prefix: {token_prefix}..., Env: {server}")
+        logger.info(f"DEBUG: Token Length: {token_len}, Env (Settings): {server}, Env (OS): {env_from_os}")
 
         # Use sandbox server if POLAR_ENVIRONMENT is set to 'sandbox'
         with Polar(access_token=clean_token, server=server) as polar:
