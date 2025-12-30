@@ -3,7 +3,11 @@ from apps.images.models import GeneratedImage
 from django.urls import path # Added import for path
 
 def landing(request):
-    return render(request, 'core/landing.html')
+    history = []
+    if request.user.is_authenticated:
+        history = GeneratedImage.objects.filter(user=request.user)[:8]
+        history = _optimize_image_urls(request, history)
+    return render(request, 'core/landing.html', {'history': history})
 
 def _optimize_image_urls(request, history):
     """Helper to optimize Cloudinary URLs for thumbnails and high-res viewing based on user plan."""

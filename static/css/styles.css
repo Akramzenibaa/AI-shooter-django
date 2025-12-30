@@ -878,8 +878,8 @@ body {
     }
 
     .logo-auth span {
-        display: none;
-        /* Hide logo name ONLY on dashboard when logged in */
+        display: inline-block;
+        /* Show logo name on mobile dashboard */
     }
 
     .logo img {

@@ -64,13 +64,31 @@
             </button>
         </div>
         <div class="drawer-content">
+            {% if user.is_authenticated %}
+            <div class="drawer-user-info">
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url|default:'https://www.gravatar.com/avatar/' }}"
+                    alt="{{ user.email }}" class="drawer-avatar">
+                <div class="drawer-user-details">
+                    <span class="drawer-username">{{ user.first_name|default:user.email }}</span>
+                    <span class="plan-badge-ui">{{ user.userprofile.get_plan_type_display }}</span>
+                </div>
+            </div>
+            <div class="drawer-stats">
+                <div class="drawer-stat-item">
+                    <span class="stat-label">Credits</span>
+                    <span class="stat-value">{{ user.userprofile.credits|default:0 }}</span>
+                </div>
+                <a href="{% url 'core:pricing' %}" class="getmore-drawer no-decoration">✨ Get More Credits</a>
+            </div>
             <div class="drawer-links">
-                <a href="{% url 'core:landing' %}" class="drawer-link">
-                    <i data-lucide="home"></i> Home
+                <a href="{% url 'core:history' %}" class="drawer-link">
+                    <i data-lucide="image"></i> History
                 </a>
-                {% if user.is_authenticated %}
                 <a href="{% url 'core:dashboard' %}" class="drawer-link">
                     <i data-lucide="layout-dashboard"></i> Launch App
+                </a>
+                <a href="{% url 'core:landing' %}" class="drawer-link">
+                    <i data-lucide="home"></i> Home
                 </a>
                 <form action="{% url 'account_logout' %}" method="post" class="drawer-logout-form">
                     {% csrf_token %}
@@ -79,11 +97,13 @@
                         <i data-lucide="log-out"></i> Sign Out
                     </button>
                 </form>
-                {% else %}
+            </div>
+            {% else %}
+            <div class="drawer-links">
                 <a href="{% url 'account_login' %}?next={{ request.path }}" class="drawer-link">Login</a>
                 <a href="{% url 'account_signup' %}?next={{ request.path }}" class="drawer-link highlight">Register</a>
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
 
