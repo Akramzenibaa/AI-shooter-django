@@ -101,19 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dropzone.style.opacity = '0.7';
 
         generatingCard.style.display = 'block';
-        // resultsCard is no longer hidden here, keeping previous results visible
-
-
-        // Show results card with skeletons immediately
-        resultsCard.style.display = 'block';
-        resultsGallery.innerHTML = '';
-        for (let i = 0; i < imgCount; i++) {
-            const skeleton = document.createElement('div');
-            skeleton.className = 'thumb-wrap skeleton';
-            skeleton.style.aspectRatio = '2 / 3'; // Standard portrait ratio for Gemini images
-            skeleton.innerHTML = '<div class="spinner-mini"></div>';
-            resultsGallery.appendChild(skeleton);
-        }
+        resultsCard.style.display = 'none'; // Hide results while generating
 
         const userPrompt = document.getElementById('user-prompt').value;
         const formData = new FormData();
