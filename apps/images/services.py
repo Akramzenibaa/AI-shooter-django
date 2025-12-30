@@ -195,13 +195,22 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                         logger.info(f"Targeting Cloudinary Cloud: {c_name}")
                         
                         import cloudinary.uploader
+                        
+                        # Prepare transformations based on plan (4K for Agency)
+                        transformation = []
+                        if plan == 'agency':
+                            transformation = [{'width': 4096, 'crop': "scale"}]
+                        elif plan in ['growth', 'starter']:
+                            transformation = [{'width': 2048, 'crop': "scale"}]
+
                         upload_res = cloudinary.uploader.upload(
                             BytesIO(final_img_bytes),
                             folder="generated_campaigns",
-                            resource_type="image"
+                            resource_type="image",
+                            transformation=transformation
                         )
                         cloudinary_url = upload_res.get('secure_url')
-                        logger.info(f"YAY! Cloudinary Success: {cloudinary_url}")
+                        logger.info(f"YAY! Cloudinary Success [Plan: {plan}]: {cloudinary_url}")
                     except Exception as e:
                         logger.error(f"CLOUDINARY UPLOAD FAILED: {str(e)}")
                         import traceback
