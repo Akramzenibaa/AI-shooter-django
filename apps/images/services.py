@@ -164,6 +164,26 @@ def generate_campaign_images(image_input, count=1, mode='creative', user_prompt=
                 if final_img_bytes:
                     filename = f"beta_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
                     
+                    # --- SAFEGUARD: Resize if over Cloudinary 25MP limit ---
+                    try:
+                        with Image.open(BytesIO(final_img_bytes)) as check_img:
+                            width, height = check_img.size
+                            mp = (width * height) / 1000000
+                            if mp > 24.5:
+                                logger.warning(f"Image is {mp:.2f}MP (Over 25MP limit). Resizing down...")
+                                # Scale down while keeping aspect ratio
+                                scale = (24.0 / mp) ** 0.5
+                                new_size = (int(width * scale), int(height * scale))
+                                check_img = check_img.resize(new_size, Image.Resampling.LANCZOS)
+                                
+                                # Export back to bytes
+                                temp_buffer = BytesIO()
+                                check_img.save(temp_buffer, format="PNG")
+                                final_img_bytes = temp_buffer.getvalue()
+                                logger.info(f"Resized to {new_size[0]}x{new_size[1]} ({ (new_size[0]*new_size[1])/1000000 :.2f}MP)")
+                    except Exception as resize_err:
+                        logger.error(f"Resize safeguard failed: {resize_err}")
+
                     # 1. Upload to Cloudinary (Primary)
                     cloudinary_url = None
                     try:
