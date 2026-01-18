@@ -16,7 +16,33 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AI SHOOTER{% endblock %}</title>
+
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}AI Shooter - Professional AI Product Photography{% endblock %}</title>
+    <meta name="description"
+        content="{% block meta_description %}Transform your product photos into professional studio-quality images in seconds with AI Shooter. The ultimate tool for Shopify, Amazon, and Etsy sellers.{% endblock %}">
+    <meta name="keywords"
+        content="AI product photography, background removal, ecommerce photos, product image enhancement, AI shooter, shopify photography">
+    <meta name="author" content="AI Shooter">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title"
+        content="{% block og_title %}AI Shooter - Professional AI Product Photography{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}Transform your product photos into professional studio-quality images in seconds with AI Shooter.{% endblock %}">
+    <meta property="og:image" content="{% static 'assets/og-image.png' %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title"
+        content="{% block twitter_title %}AI Shooter - Professional AI Product Photography{% endblock %}">
+    <meta property="twitter:description"
+        content="{% block twitter_description %}Transform your product photos into professional studio-quality images in seconds with AI Shooter.{% endblock %}">
+    <meta property="twitter:image" content="{% static 'assets/og-image.png' %}">
 
     <link rel="icon" href="{% static 'assets/logo.png' %}">
 

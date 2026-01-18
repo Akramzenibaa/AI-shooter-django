@@ -54,3 +54,19 @@ def blog(request):
 
 def pricing(request):
     return render(request, 'core/pricing.html')
+
+def robots_txt(request):
+    from django.http import HttpResponse
+    content = ""
+    import os
+    from django.conf import settings
+    path = os.path.join(settings.BASE_DIR, 'static', 'robots.txt')
+    try:
+        with open(path, 'r') as f:
+            content = f.read()
+    except:
+        content = "User-agent: *\nAllow: /"
+    return HttpResponse(content, content_type="text/plain")
+
+def sitemap_xml(request):
+    return render(request, 'sitemap.xml', content_type="application/xml")

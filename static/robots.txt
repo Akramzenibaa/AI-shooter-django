@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /about/
+Allow: /pricing/
+Allow: /blog/
+Disallow: /admin/
+Disallow: /app/
+Disallow: /history/
+Disallow: /user/
+Disallow: /accounts/
+
+Sitemap: https://aishooter.lbahi.digital/sitemap.xml

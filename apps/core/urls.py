@@ -12,4 +12,6 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('blog/', views.blog, name='blog'),
     path('pricing/', views.pricing, name='pricing'),
+    path('robots.txt', views.robots_txt),
+    path('sitemap.xml', views.sitemap_xml),
 ]
