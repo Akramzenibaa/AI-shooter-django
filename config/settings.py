@@ -234,18 +234,18 @@ CLOUDINARY_STORAGE = {
 # Polar.sh Settings
 POLAR_ACCESS_TOKEN = os.getenv('POLAR_ACCESS_TOKEN', 'polar_oat_7eLqMiNnvaMblWwixLDOf9ybmEQHX0haR4aOr0XkMf3')
 POLAR_WEBHOOK_SECRET = os.getenv('POLAR_WEBHOOK_SECRET', 'polar_whs_XxkXxN90ei8YlW5qGu7oI1KDeEwQFjQVJqrcV3rW3RZ')
-POLAR_ENVIRONMENT = os.getenv('POLAR_ENVIRONMENT', 'sandbox') # 'production' or 'sandbox'
+POLAR_ENVIRONMENT = os.getenv('POLAR_ENVIRONMENT', 'production') # 'production' or 'sandbox'
 # Mapping Polar product IDs to plans/credits
 POLAR_PRODUCT_MAP = {
     # Subscriptions
-    'b718dec4-bf51-4d85-a5ce-e38244a6b507': {'plan': 'starter', 'credits': 40}, # Startup Shop
-    '77fd47cb-a5f7-4699-8a18-bbfafac5001e': {'plan': 'growth', 'credits': 140}, # Growth Brand
-    '0541bc7d-0b23-4beb-9e5a-682fec7057bb': {'plan': 'agency', 'credits': 320}, # Agency Elite
+    'e404b075-4eb7-43c9-8029-82db2e9d2a68': {'plan': 'starter', 'credits': 40}, # Starter Shop
+    '6757d539-dcc5-4b21-8283-51ff87158ee9': {'plan': 'growth', 'credits': 140}, # Growth Brand
+    '77501b94-f393-4865-ad02-4e26cfb9e160': {'plan': 'agency', 'credits': 320}, # Agency Elite
 
     # Credit Packs
-    '16b80370-1ec8-4a70-9bad-162d70a9575b': {'credits': 10}, # 12$ pack (Trial equivalent)
-    '528b2186-1473-484f-b5c3-aa78ddef22a1': {'credits': 30}, # 30$ pack (Standard/Pro equivalent)
-    '6d63f2c6-baee-41fa-b168-e7c2660de03d': {'credits': 100}, # Pro pack (Higher tier)
+    'dbc85dc0-15f0-4264-8274-1e34e72c1926': {'credits': 10},  # Trial Pack
+    '18421782-506d-4afa-8783-94a1260da915': {'credits': 30},  # Studio Pack
+    '6f3b62e4-447b-44c0-bf7c-342e9b1bc264': {'credits': 100}, # Pro Pack
 }
 
 LOGGING = {

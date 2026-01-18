@@ -11,7 +11,7 @@ urlpatterns = [
     path('images/', include('apps.images.urls')), # Image gen
     path('', include('apps.core.urls')), # Main dashboard
     # Specific webhook path to match user configuration
-    path('payments/webhook/', webhooks.polar_webhook, name='polar_webhook_payments'),
+    path('webhook/products/polar', webhooks.polar_webhook, name='polar_webhook_products'),
 ]
 
 if settings.DEBUG:
